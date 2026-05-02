@@ -1,4 +1,361 @@
-<html><body><h1>inference/pipeline.py</h1>Killed 104 out of 280 mutants<h2>Survived</h2>Survived mutation testing. These mutants show holes in your test suite.<h3>Mutant 1</h3><pre>--- inference/pipeline.py
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>inference/pipeline.py – Mutation Final</title>
+<style>
+:root {
+  --bg:        #0d1117;
+  --surface:   #161b22;
+  --surface2:  #1c2128;
+  --border:    #30363d;
+  --text:      #e6edf3;
+  --muted:     #8b949e;
+  --red:       #ff7b72;
+  --red-bg:    #2a1515;
+  --red-gutter:#5c1f1f;
+  --green:     #3fb950;
+  --green-bg:  #122117;
+  --green-gutter:#1a3d24;
+  --blue:      #58a6ff;
+  --hunk:      #1c2d3f;
+  --accent:    #238636;
+  --warning:   #d29922;
+  --radius:    8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── layout ── */
+.page-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+
+/* ── top bar ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar .logo { font-weight: 700; font-size: 15px; color: var(--text); }
+.topbar .logo span { color: var(--blue); }
+.topbar nav a {
+  color: var(--muted); font-size: 13px; margin-left: 16px;
+}
+.topbar nav a:hover { color: var(--text); }
+
+/* ── hero ── */
+.hero {
+  margin: 32px 0 24px;
+  padding: 28px 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.hero h1 {
+  font-size: 22px; font-weight: 700;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero .subtitle { color: var(--muted); margin-top: 6px; font-size: 13px; }
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 2px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 600; line-height: 1.8;
+}
+.tag-blue  { background: #1c2d3f; color: var(--blue); border: 1px solid #264d73; }
+.tag-green { background: var(--green-bg); color: var(--green); border: 1px solid #1a3d24; }
+.tag-red   { background: var(--red-bg); color: var(--red); border: 1px solid #5c1f1f; }
+
+/* ── stat cards ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.stat-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+}
+.stat-card .label { font-size: 11px; text-transform: uppercase;
+                    letter-spacing: .06em; color: var(--muted); }
+.stat-card .value { font-size: 28px; font-weight: 700; margin-top: 4px; }
+.stat-card.killed .value  { color: var(--green); }
+.stat-card.survived .value{ color: var(--red); }
+.stat-card.rate .value    { color: var(--warning); }
+
+/* ── progress bar ── */
+.progress-wrap { margin: 4px 0 20px; }
+.progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--muted); margin-bottom: 6px;
+}
+.progress-bar {
+  height: 8px; background: var(--surface2);
+  border-radius: 4px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.progress-fill {
+  height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  transition: width .4s ease;
+}
+
+/* ── table ── */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 8px;
+}
+.report-table th {
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.report-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.report-table tr:last-child td { border-bottom: none; }
+.report-table tr:hover td { background: var(--surface2); }
+.report-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.report-table .pct { font-weight: 600; }
+
+/* ── mutant cards ── */
+.section-header {
+  display: flex; align-items: center; gap: 10px;
+  margin: 32px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.section-header h2 { font-size: 17px; }
+
+.controls {
+  display: flex; gap: 10px; margin-bottom: 16px; align-items: center;
+  flex-wrap: wrap;
+}
+#search {
+  flex: 1; min-width: 200px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 8px 12px;
+  font-size: 13px;
+  outline: none;
+}
+#search:focus { border-color: var(--blue); }
+#search::placeholder { color: var(--muted); }
+
+.btn {
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.btn:hover { color: var(--text); border-color: var(--blue); }
+.btn.active { color: var(--blue); border-color: var(--blue); }
+
+#count-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+.mutant-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.mutant-card:hover { border-color: #484f58; }
+
+.mutant-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+  gap: 12px;
+}
+.mutant-header:hover { background: var(--surface2); }
+
+.mutant-num {
+  font-size: 11px; font-weight: 700;
+  color: var(--muted);
+  min-width: 68px;
+}
+.mutant-summary {
+  flex: 1;
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+.mutant-summary .del { color: var(--red); }
+.mutant-summary .add { color: var(--green); }
+
+.chevron {
+  font-size: 10px; color: var(--muted);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.mutant-card.open .chevron { transform: rotate(90deg); }
+
+.diff-wrap {
+  display: none;
+  border-top: 1px solid var(--border);
+  overflow-x: auto;
+}
+.mutant-card.open .diff-wrap { display: block; }
+
+/* ── diff table ── */
+.diff-table {
+  width: 100%; border-collapse: collapse;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 12px; line-height: 1.5;
+}
+.diff-table td { padding: 1px 12px; white-space: pre; }
+.diff-table .ln {
+  width: 1%; min-width: 40px;
+  text-align: right;
+  color: var(--muted);
+  padding-right: 16px;
+  user-select: none;
+  border-right: 1px solid var(--border);
+}
+.diff-line-del td { background: var(--red-bg); }
+.diff-line-del .ln { background: var(--red-gutter); color: #c9625a; }
+.diff-line-del .code { color: var(--red); }
+.diff-line-add td { background: var(--green-bg); }
+.diff-line-add .ln { background: var(--green-gutter); color: #3d9950; }
+.diff-line-add .code { color: var(--green); }
+.diff-line-hunk td { background: var(--hunk); color: var(--blue); }
+.diff-line-hunk .ln { background: var(--hunk); color: var(--blue); }
+
+/* ── back link / breadcrumb ── */
+.breadcrumb {
+  font-size: 12px; color: var(--muted);
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 6px;
+}
+.breadcrumb a { color: var(--muted); }
+.breadcrumb a:hover { color: var(--text); }
+
+/* ── fab ── */
+#back-top {
+  position: fixed; bottom: 28px; right: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  cursor: pointer; color: var(--muted);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s, color .15s;
+  z-index: 99;
+}
+#back-top.visible { opacity: 1; pointer-events: all; }
+#back-top:hover { color: var(--text); }
+
+/* ── responsive ── */
+@media (max-width: 600px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .hero { padding: 18px; }
+  .topbar { padding: 10px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="logo">Rad<span>Guard</span> Mutation Testing</span>
+  <nav>
+    <a href="../../mutation_baseline/index.html">Baseline</a>
+    <a href="../../mutation_final/index.html">Final</a>
+    <a href="../../baseline_coverage/index.html">Coverage</a>
+  </nav>
+</div>
+<div class="page-wrap">
+
+  <div class="breadcrumb">
+    <a href="../index.html">Mutation – Final</a> › <span>inference/pipeline.py</span>
+  </div>
+
+  <div class="hero">
+    <h1>
+      inference/pipeline.py
+      <span class="tag tag-blue">Final</span>
+    </h1>
+    <p class="subtitle">
+      Killed <strong style="color:var(--green)">104</strong> out of
+      <strong>280</strong> mutants &nbsp;·&nbsp;
+      <strong style="color:var(--red)">176</strong> survived
+    </p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="label">Total</div><div class="value">280</div></div>
+    <div class="stat-card killed"><div class="label">Killed</div><div class="value">104</div></div>
+    <div class="stat-card survived"><div class="label">Survived</div><div class="value">176</div></div>
+    <div class="stat-card rate"><div class="label">Kill Rate</div>
+      <div class="value">37.1%</div></div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Kill rate</span><span>37.1%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width:37.1%"></div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h2>Survived Mutants</h2>
+    <span class="tag tag-red">176 survived</span>
+  </div>
+
+  <div class="controls">
+    <input id="search" type="text" placeholder="Filter by line content, operator…">
+    <button class="btn" id="expand-all">Expand all</button>
+    <button class="btn" id="collapse-all">Collapse all</button>
+    <span id="count-label"></span>
+  </div>
+
+  <div id="mutant-list">
+
+<div class="mutant-card" data-num="1">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #1</span>
+    <span class="mutant-summary"><span class="del">- nltk.download('punkt', quiet=True)</span>  <span class="add">+ nltk.download('XXpunktXX', quiet=True)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -18,7 +18,7 @@
  from PIL import Image
@@ -9,7 +366,17 @@
  nltk.download('punkt_tab', quiet=True)
  
  from .chexbert_runner import run_chexbert, chexbert_to_tensor
-</pre><h3>Mutant 2</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="2">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #2</span>
+    <span class="mutant-summary"><span class="del">- nltk.download('punkt', quiet=True)</span>  <span class="add">+ nltk.download('punkt', quiet=False)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -18,7 +18,7 @@
  from PIL import Image
@@ -20,7 +387,17 @@
  nltk.download('punkt_tab', quiet=True)
  
  from .chexbert_runner import run_chexbert, chexbert_to_tensor
-</pre><h3>Mutant 3</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="3">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #3</span>
+    <span class="mutant-summary"><span class="del">- nltk.download('punkt_tab', quiet=True)</span>  <span class="add">+ nltk.download('XXpunkt_tabXX', quiet=True)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -19,7 +19,7 @@
  from nltk.tokenize import sent_tokenize
@@ -31,7 +408,17 @@
  
  from .chexbert_runner import run_chexbert, chexbert_to_tensor
  from .model import run_inference_on_sentence, CONDITIONS
-</pre><h3>Mutant 4</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="4">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #4</span>
+    <span class="mutant-summary"><span class="del">- nltk.download('punkt_tab', quiet=True)</span>  <span class="add">+ nltk.download('punkt_tab', quiet=False)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -19,7 +19,7 @@
  from nltk.tokenize import sent_tokenize
@@ -42,10 +429,20 @@
  
  from .chexbert_runner import run_chexbert, chexbert_to_tensor
  from .model import run_inference_on_sentence, CONDITIONS
-</pre><h3>Mutant 7</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="7">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #7</span>
+    <span class="mutant-summary"><span class="del">- 'NOT_MENTIONED': 0.0,</span>  <span class="add">+ 'XXNOT_MENTIONEDXX': 0.0,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -30,7 +30,7 @@
- # Hallucination > Missing > Inaccurate
+ # Hallucination &gt; Missing &gt; Inaccurate
  ELRRS_WEIGHTS = {
      'SUPPORTED':     1.0,
 -    'NOT_MENTIONED': 0.0,
@@ -53,10 +450,20 @@
      'INACCURATE':   -0.3,
      'MISSING':      -0.5,
      'HALLUCINATED': -0.7,
-</pre><h3>Mutant 8</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="8">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #8</span>
+    <span class="mutant-summary"><span class="del">- 'NOT_MENTIONED': 0.0,</span>  <span class="add">+ 'NOT_MENTIONED': 1.0,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -30,7 +30,7 @@
- # Hallucination > Missing > Inaccurate
+ # Hallucination &gt; Missing &gt; Inaccurate
  ELRRS_WEIGHTS = {
      'SUPPORTED':     1.0,
 -    'NOT_MENTIONED': 0.0,
@@ -64,7 +471,17 @@
      'INACCURATE':   -0.3,
      'MISSING':      -0.5,
      'HALLUCINATED': -0.7,
-</pre><h3>Mutant 21</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="21">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #21</span>
+    <span class="mutant-summary"><span class="del">- (80, 'Excellent', '#4CAF50', 'Clinically safe — minimal errors'),</span>  <span class="add">+ (80, 'Excellent', 'XX#4CAF50XX', 'Clinically safe — minimal errors'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -36,7 +36,7 @@
      'HALLUCINATED': -0.7,
@@ -75,7 +492,17 @@
      (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
      (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
      (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
-</pre><h3>Mutant 22</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="22">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #22</span>
+    <span class="mutant-summary"><span class="del">- (80, 'Excellent', '#4CAF50', 'Clinically safe — minimal errors'),</span>  <span class="add">+ (80, 'Excellent', '#4CAF50', 'XXClinically safe — minimal errorsXX'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -36,7 +36,7 @@
      'HALLUCINATED': -0.7,
@@ -86,7 +513,17 @@
      (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
      (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
      (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
-</pre><h3>Mutant 25</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="25">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #25</span>
+    <span class="mutant-summary"><span class="del">- (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),</span>  <span class="add">+ (60, 'Good',      'XX#8BC34AXX', 'Minor errors — clinically acceptable'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -37,7 +37,7 @@
  }
@@ -97,7 +534,17 @@
      (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
      (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
      (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
-</pre><h3>Mutant 26</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="26">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #26</span>
+    <span class="mutant-summary"><span class="del">- (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),</span>  <span class="add">+ (60, 'Good',      '#8BC34A', 'XXMinor errors — clinically acceptableXX'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -37,7 +37,7 @@
  }
@@ -108,7 +555,17 @@
      (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
      (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
      (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
-</pre><h3>Mutant 29</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="29">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #29</span>
+    <span class="mutant-summary"><span class="del">- (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),</span>  <span class="add">+ (40, 'Fair',      'XX#FF9800XX', 'Moderate errors — review advised'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -38,7 +38,7 @@
  ELRRS_GRADES = [
@@ -119,7 +576,17 @@
      (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
      (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
  ]
-</pre><h3>Mutant 30</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="30">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #30</span>
+    <span class="mutant-summary"><span class="del">- (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),</span>  <span class="add">+ (40, 'Fair',      '#FF9800', 'XXModerate errors — review advisedXX'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -38,7 +38,7 @@
  ELRRS_GRADES = [
@@ -130,7 +597,17 @@
      (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
      (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
  ]
-</pre><h3>Mutant 34</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="34">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #34</span>
+    <span class="mutant-summary"><span class="del">- (20, 'Poor',      '#F44336', 'Significant errors — high risk'),</span>  <span class="add">+ (20, 'Poor',      '#F44336', 'XXSignificant errors — high riskXX'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -39,7 +39,7 @@
      (80, 'Excellent', '#4CAF50', 'Clinically safe — minimal errors'),
@@ -141,7 +618,17 @@
      (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
  ]
  
-</pre><h3>Mutant 35</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="35">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #35</span>
+    <span class="mutant-summary"><span class="del">- (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),</span>  <span class="add">+ (1,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -40,7 +40,7 @@
      (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
@@ -152,7 +639,17 @@
  ]
  
  CHEXBERT_COLS = [
-</pre><h3>Mutant 37</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="37">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #37</span>
+    <span class="mutant-summary"><span class="del">- (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),</span>  <span class="add">+ (0,  'Critical',  'XX#9C27B0XX', 'Severe errors — unsafe'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -40,7 +40,7 @@
      (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
@@ -163,7 +660,17 @@
  ]
  
  CHEXBERT_COLS = [
-</pre><h3>Mutant 38</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="38">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #38</span>
+    <span class="mutant-summary"><span class="del">- (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),</span>  <span class="add">+ (0,  'Critical',  '#9C27B0', 'XXSevere errors — unsafeXX'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -40,7 +40,7 @@
      (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
@@ -174,7 +681,17 @@
  ]
  
  CHEXBERT_COLS = [
-</pre><h3>Mutant 40</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="40">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #40</span>
+    <span class="mutant-summary"><span class="del">- 'Enlarged Cardiomediastinum', 'Cardiomegaly',</span>  <span class="add">+ 'XXEnlarged CardiomediastinumXX', 'Cardiomegaly',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -44,7 +44,7 @@
  ]
@@ -185,7 +702,17 @@
      'Lung Opacity', 'Lung Lesion', 'Edema',
      'Consolidation', 'Pneumonia', 'Atelectasis',
      'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
-</pre><h3>Mutant 41</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="41">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #41</span>
+    <span class="mutant-summary"><span class="del">- 'Enlarged Cardiomediastinum', 'Cardiomegaly',</span>  <span class="add">+ 'Enlarged Cardiomediastinum', 'XXCardiomegalyXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -44,7 +44,7 @@
  ]
@@ -196,7 +723,17 @@
      'Lung Opacity', 'Lung Lesion', 'Edema',
      'Consolidation', 'Pneumonia', 'Atelectasis',
      'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
-</pre><h3>Mutant 42</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="42">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #42</span>
+    <span class="mutant-summary"><span class="del">- 'Lung Opacity', 'Lung Lesion', 'Edema',</span>  <span class="add">+ 'XXLung OpacityXX', 'Lung Lesion', 'Edema',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -45,7 +45,7 @@
  
@@ -207,7 +744,17 @@
      'Consolidation', 'Pneumonia', 'Atelectasis',
      'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
      'Fracture', 'Support Devices', 'No Finding'
-</pre><h3>Mutant 43</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="43">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #43</span>
+    <span class="mutant-summary"><span class="del">- 'Lung Opacity', 'Lung Lesion', 'Edema',</span>  <span class="add">+ 'Lung Opacity', 'XXLung LesionXX', 'Edema',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -45,7 +45,7 @@
  
@@ -218,7 +765,17 @@
      'Consolidation', 'Pneumonia', 'Atelectasis',
      'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
      'Fracture', 'Support Devices', 'No Finding'
-</pre><h3>Mutant 44</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="44">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #44</span>
+    <span class="mutant-summary"><span class="del">- 'Lung Opacity', 'Lung Lesion', 'Edema',</span>  <span class="add">+ 'Lung Opacity', 'Lung Lesion', 'XXEdemaXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -45,7 +45,7 @@
  
@@ -229,7 +786,17 @@
      'Consolidation', 'Pneumonia', 'Atelectasis',
      'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
      'Fracture', 'Support Devices', 'No Finding'
-</pre><h3>Mutant 45</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="45">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #45</span>
+    <span class="mutant-summary"><span class="del">- 'Consolidation', 'Pneumonia', 'Atelectasis',</span>  <span class="add">+ 'XXConsolidationXX', 'Pneumonia', 'Atelectasis',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -46,7 +46,7 @@
  CHEXBERT_COLS = [
@@ -240,7 +807,17 @@
      'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
      'Fracture', 'Support Devices', 'No Finding'
  ]
-</pre><h3>Mutant 46</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="46">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #46</span>
+    <span class="mutant-summary"><span class="del">- 'Consolidation', 'Pneumonia', 'Atelectasis',</span>  <span class="add">+ 'Consolidation', 'XXPneumoniaXX', 'Atelectasis',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -46,7 +46,7 @@
  CHEXBERT_COLS = [
@@ -251,7 +828,17 @@
      'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
      'Fracture', 'Support Devices', 'No Finding'
  ]
-</pre><h3>Mutant 47</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="47">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #47</span>
+    <span class="mutant-summary"><span class="del">- 'Consolidation', 'Pneumonia', 'Atelectasis',</span>  <span class="add">+ 'Consolidation', 'Pneumonia', 'XXAtelectasisXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -46,7 +46,7 @@
  CHEXBERT_COLS = [
@@ -262,7 +849,17 @@
      'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
      'Fracture', 'Support Devices', 'No Finding'
  ]
-</pre><h3>Mutant 48</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="48">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #48</span>
+    <span class="mutant-summary"><span class="del">- 'Pneumothorax', 'Pleural Effusion', 'Pleural Other',</span>  <span class="add">+ 'XXPneumothoraxXX', 'Pleural Effusion', 'Pleural Other',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -47,7 +47,7 @@
      'Enlarged Cardiomediastinum', 'Cardiomegaly',
@@ -273,7 +870,17 @@
      'Fracture', 'Support Devices', 'No Finding'
  ]
  ERROR_PRIORITY = {
-</pre><h3>Mutant 49</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="49">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #49</span>
+    <span class="mutant-summary"><span class="del">- 'Pneumothorax', 'Pleural Effusion', 'Pleural Other',</span>  <span class="add">+ 'Pneumothorax', 'XXPleural EffusionXX', 'Pleural Other',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -47,7 +47,7 @@
      'Enlarged Cardiomediastinum', 'Cardiomegaly',
@@ -284,7 +891,17 @@
      'Fracture', 'Support Devices', 'No Finding'
  ]
  ERROR_PRIORITY = {
-</pre><h3>Mutant 50</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="50">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #50</span>
+    <span class="mutant-summary"><span class="del">- 'Pneumothorax', 'Pleural Effusion', 'Pleural Other',</span>  <span class="add">+ 'Pneumothorax', 'Pleural Effusion', 'XXPleural OtherXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -47,7 +47,7 @@
      'Enlarged Cardiomediastinum', 'Cardiomegaly',
@@ -295,7 +912,17 @@
      'Fracture', 'Support Devices', 'No Finding'
  ]
  ERROR_PRIORITY = {
-</pre><h3>Mutant 51</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="51">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #51</span>
+    <span class="mutant-summary"><span class="del">- 'Fracture', 'Support Devices', 'No Finding'</span>  <span class="add">+ 'XXFractureXX', 'Support Devices', 'No Finding'</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -48,7 +48,7 @@
      'Lung Opacity', 'Lung Lesion', 'Edema',
@@ -306,7 +933,17 @@
  ]
  ERROR_PRIORITY = {
      'HALLUCINATED': 3, 'INACCURATE': 2,
-</pre><h3>Mutant 52</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="52">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #52</span>
+    <span class="mutant-summary"><span class="del">- 'Fracture', 'Support Devices', 'No Finding'</span>  <span class="add">+ 'Fracture', 'XXSupport DevicesXX', 'No Finding'</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -48,7 +48,7 @@
      'Lung Opacity', 'Lung Lesion', 'Edema',
@@ -317,7 +954,17 @@
  ]
  ERROR_PRIORITY = {
      'HALLUCINATED': 3, 'INACCURATE': 2,
-</pre><h3>Mutant 53</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="53">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #53</span>
+    <span class="mutant-summary"><span class="del">- 'Fracture', 'Support Devices', 'No Finding'</span>  <span class="add">+ 'Fracture', 'Support Devices', 'XXNo FindingXX'</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -48,7 +48,7 @@
      'Lung Opacity', 'Lung Lesion', 'Edema',
@@ -328,7 +975,17 @@
  ]
  ERROR_PRIORITY = {
      'HALLUCINATED': 3, 'INACCURATE': 2,
-</pre><h3>Mutant 55</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="55">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #55</span>
+    <span class="mutant-summary"><span class="del">- 'HALLUCINATED': 3, 'INACCURATE': 2,</span>  <span class="add">+ 'XXHALLUCINATEDXX': 3, 'INACCURATE': 2,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -51,7 +51,7 @@
      'Fracture', 'Support Devices', 'No Finding'
@@ -339,7 +996,17 @@
      'MISSING': 1, 'SUPPORTED': 0
  }
  ERROR_MEANING = {
-</pre><h3>Mutant 56</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="56">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #56</span>
+    <span class="mutant-summary"><span class="del">- 'HALLUCINATED': 3, 'INACCURATE': 2,</span>  <span class="add">+ 'HALLUCINATED': 4, 'INACCURATE': 2,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -51,7 +51,7 @@
      'Fracture', 'Support Devices', 'No Finding'
@@ -350,7 +1017,17 @@
      'MISSING': 1, 'SUPPORTED': 0
  }
  ERROR_MEANING = {
-</pre><h3>Mutant 57</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="57">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #57</span>
+    <span class="mutant-summary"><span class="del">- 'HALLUCINATED': 3, 'INACCURATE': 2,</span>  <span class="add">+ 'HALLUCINATED': 3, 'XXINACCURATEXX': 2,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -51,7 +51,7 @@
      'Fracture', 'Support Devices', 'No Finding'
@@ -361,7 +1038,17 @@
      'MISSING': 1, 'SUPPORTED': 0
  }
  ERROR_MEANING = {
-</pre><h3>Mutant 58</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="58">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #58</span>
+    <span class="mutant-summary"><span class="del">- 'HALLUCINATED': 3, 'INACCURATE': 2,</span>  <span class="add">+ 'HALLUCINATED': 3, 'INACCURATE': 3,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -51,7 +51,7 @@
      'Fracture', 'Support Devices', 'No Finding'
@@ -372,7 +1059,17 @@
      'MISSING': 1, 'SUPPORTED': 0
  }
  ERROR_MEANING = {
-</pre><h3>Mutant 59</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="59">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #59</span>
+    <span class="mutant-summary"><span class="del">- 'MISSING': 1, 'SUPPORTED': 0</span>  <span class="add">+ 'XXMISSINGXX': 1, 'SUPPORTED': 0</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -52,7 +52,7 @@
  ]
@@ -383,7 +1080,17 @@
  }
  ERROR_MEANING = {
      'SUPPORTED':     'AI report is correct — X-ray confirms it',
-</pre><h3>Mutant 60</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="60">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #60</span>
+    <span class="mutant-summary"><span class="del">- 'MISSING': 1, 'SUPPORTED': 0</span>  <span class="add">+ 'MISSING': 2, 'SUPPORTED': 0</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -52,7 +52,7 @@
  ]
@@ -394,7 +1101,17 @@
  }
  ERROR_MEANING = {
      'SUPPORTED':     'AI report is correct — X-ray confirms it',
-</pre><h3>Mutant 61</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="61">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #61</span>
+    <span class="mutant-summary"><span class="del">- 'MISSING': 1, 'SUPPORTED': 0</span>  <span class="add">+ 'MISSING': 1, 'XXSUPPORTEDXX': 0</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -52,7 +52,7 @@
  ]
@@ -405,7 +1122,17 @@
  }
  ERROR_MEANING = {
      'SUPPORTED':     'AI report is correct — X-ray confirms it',
-</pre><h3>Mutant 62</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="62">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #62</span>
+    <span class="mutant-summary"><span class="del">- 'MISSING': 1, 'SUPPORTED': 0</span>  <span class="add">+ 'MISSING': 1, 'SUPPORTED': 1</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -52,7 +52,7 @@
  ]
@@ -416,7 +1143,17 @@
  }
  ERROR_MEANING = {
      'SUPPORTED':     'AI report is correct — X-ray confirms it',
-</pre><h3>Mutant 63</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="63">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #63</span>
+    <span class="mutant-summary"><span class="del">- ERROR_PRIORITY = {</span>  <span class="add">+ ERROR_PRIORITY = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -50,10 +50,7 @@
      'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
@@ -430,7 +1167,17 @@
  ERROR_MEANING = {
      'SUPPORTED':     'AI report is correct — X-ray confirms it',
      'HALLUCINATED':  'AI made this up — not visible on X-ray',
-</pre><h3>Mutant 64</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="64">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #64</span>
+    <span class="mutant-summary"><span class="del">- 'SUPPORTED':     'AI report is correct — X-ray confirms it',</span>  <span class="add">+ 'XXSUPPORTEDXX':     'AI report is correct — X-ray confirms it',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -55,7 +55,7 @@
      'MISSING': 1, 'SUPPORTED': 0
@@ -441,7 +1188,17 @@
      'HALLUCINATED':  'AI made this up — not visible on X-ray',
      'MISSING':       'AI forgot this — it IS visible on X-ray',
      'INACCURATE':    'AI mentioned it but described it wrongly',
-</pre><h3>Mutant 65</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="65">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #65</span>
+    <span class="mutant-summary"><span class="del">- 'SUPPORTED':     'AI report is correct — X-ray confirms it',</span>  <span class="add">+ 'SUPPORTED':     'XXAI report is correct — X-ray confirms itXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -55,7 +55,7 @@
      'MISSING': 1, 'SUPPORTED': 0
@@ -452,7 +1209,17 @@
      'HALLUCINATED':  'AI made this up — not visible on X-ray',
      'MISSING':       'AI forgot this — it IS visible on X-ray',
      'INACCURATE':    'AI mentioned it but described it wrongly',
-</pre><h3>Mutant 66</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="66">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #66</span>
+    <span class="mutant-summary"><span class="del">- 'HALLUCINATED':  'AI made this up — not visible on X-ray',</span>  <span class="add">+ 'XXHALLUCINATEDXX':  'AI made this up — not visible on X-ray',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -56,7 +56,7 @@
  }
@@ -463,7 +1230,17 @@
      'MISSING':       'AI forgot this — it IS visible on X-ray',
      'INACCURATE':    'AI mentioned it but described it wrongly',
      'NOT_MENTIONED': 'Condition not present — AI correctly silent',
-</pre><h3>Mutant 67</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="67">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #67</span>
+    <span class="mutant-summary"><span class="del">- 'HALLUCINATED':  'AI made this up — not visible on X-ray',</span>  <span class="add">+ 'HALLUCINATED':  'XXAI made this up — not visible on X-rayXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -56,7 +56,7 @@
  }
@@ -474,7 +1251,17 @@
      'MISSING':       'AI forgot this — it IS visible on X-ray',
      'INACCURATE':    'AI mentioned it but described it wrongly',
      'NOT_MENTIONED': 'Condition not present — AI correctly silent',
-</pre><h3>Mutant 68</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="68">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #68</span>
+    <span class="mutant-summary"><span class="del">- 'MISSING':       'AI forgot this — it IS visible on X-ray',</span>  <span class="add">+ 'XXMISSINGXX':       'AI forgot this — it IS visible on X-ray',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -57,7 +57,7 @@
  ERROR_MEANING = {
@@ -485,7 +1272,17 @@
      'INACCURATE':    'AI mentioned it but described it wrongly',
      'NOT_MENTIONED': 'Condition not present — AI correctly silent',
  }
-</pre><h3>Mutant 69</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="69">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #69</span>
+    <span class="mutant-summary"><span class="del">- 'MISSING':       'AI forgot this — it IS visible on X-ray',</span>  <span class="add">+ 'MISSING':       'XXAI forgot this — it IS visible on X-rayXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -57,7 +57,7 @@
  ERROR_MEANING = {
@@ -496,7 +1293,17 @@
      'INACCURATE':    'AI mentioned it but described it wrongly',
      'NOT_MENTIONED': 'Condition not present — AI correctly silent',
  }
-</pre><h3>Mutant 70</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="70">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #70</span>
+    <span class="mutant-summary"><span class="del">- 'INACCURATE':    'AI mentioned it but described it wrongly',</span>  <span class="add">+ 'XXINACCURATEXX':    'AI mentioned it but described it wrongly',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -58,7 +58,7 @@
      'SUPPORTED':     'AI report is correct — X-ray confirms it',
@@ -507,7 +1314,17 @@
      'NOT_MENTIONED': 'Condition not present — AI correctly silent',
  }
  
-</pre><h3>Mutant 71</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="71">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #71</span>
+    <span class="mutant-summary"><span class="del">- 'INACCURATE':    'AI mentioned it but described it wrongly',</span>  <span class="add">+ 'INACCURATE':    'XXAI mentioned it but described it wronglyXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -58,7 +58,7 @@
      'SUPPORTED':     'AI report is correct — X-ray confirms it',
@@ -518,7 +1335,17 @@
      'NOT_MENTIONED': 'Condition not present — AI correctly silent',
  }
  
-</pre><h3>Mutant 72</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="72">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #72</span>
+    <span class="mutant-summary"><span class="del">- 'NOT_MENTIONED': 'Condition not present — AI correctly silent',</span>  <span class="add">+ 'XXNOT_MENTIONEDXX': 'Condition not present — AI correctly silent',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -59,7 +59,7 @@
      'HALLUCINATED':  'AI made this up — not visible on X-ray',
@@ -529,7 +1356,17 @@
  }
  
  
-</pre><h3>Mutant 73</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="73">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #73</span>
+    <span class="mutant-summary"><span class="del">- 'NOT_MENTIONED': 'Condition not present — AI correctly silent',</span>  <span class="add">+ 'NOT_MENTIONED': 'XXCondition not present — AI correctly silentXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -59,7 +59,7 @@
      'HALLUCINATED':  'AI made this up — not visible on X-ray',
@@ -540,7 +1377,17 @@
  }
  
  
-</pre><h3>Mutant 80</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="80">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #80</span>
+    <span class="mutant-summary"><span class="del">- found = False</span>  <span class="add">+ found = True</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -80,7 +80,7 @@
      mentioned_in = {cond: [] for cond in CONDITIONS}
@@ -551,7 +1398,17 @@
          for cond, chex_col in zip(CONDITIONS, CHEXBERT_COLS):
              v = chex_labels.get(chex_col, float('nan'))
              try:
-</pre><h3>Mutant 81</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="81">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #81</span>
+    <span class="mutant-summary"><span class="del">- found = False</span>  <span class="add">+ found = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -80,7 +80,7 @@
      mentioned_in = {cond: [] for cond in CONDITIONS}
@@ -562,7 +1419,17 @@
          for cond, chex_col in zip(CONDITIONS, CHEXBERT_COLS):
              v = chex_labels.get(chex_col, float('nan'))
              try:
-</pre><h3>Mutant 83</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="83">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #83</span>
+    <span class="mutant-summary"><span class="del">- v = chex_labels.get(chex_col, float('nan'))</span>  <span class="add">+ v = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -82,7 +82,7 @@
      for si, chex_labels in enumerate(all_chexbert_labels):
@@ -573,7 +1440,17 @@
              try:
                  fv = float(v)
                  if not math.isnan(fv):
-</pre><h3>Mutant 84</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="84">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #84</span>
+    <span class="mutant-summary"><span class="del">- fv = float(v)</span>  <span class="add">+ fv = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -84,7 +84,7 @@
          for cond, chex_col in zip(CONDITIONS, CHEXBERT_COLS):
@@ -584,7 +1461,17 @@
                  if not math.isnan(fv):
                      mentioned_in[cond].append(si)
                      found = True
-</pre><h3>Mutant 86</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="86">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #86</span>
+    <span class="mutant-summary"><span class="del">- found = True</span>  <span class="add">+ found = False</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -87,7 +87,7 @@
                  fv = float(v)
@@ -595,7 +1482,17 @@
              except:
                  pass
  
-</pre><h3>Mutant 87</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="87">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #87</span>
+    <span class="mutant-summary"><span class="del">- found = True</span>  <span class="add">+ found = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -87,7 +87,7 @@
                  fv = float(v)
@@ -606,7 +1503,17 @@
              except:
                  pass
  
-</pre><h3>Mutant 89</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="89">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #89</span>
+    <span class="mutant-summary"><span class="del">- best_pred, best_conf, best_si = None, -1.0, -1</span>  <span class="add">+ best_pred, best_conf, best_si = None, +1.0, -1</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -94,7 +94,7 @@
      report_verdicts = {}
@@ -617,7 +1524,17 @@
              for si in mentioned_in[cond]:
                  pred = all_sentence_preds[si][cond]['prediction']
                  conf = all_sentence_preds[si][cond]['confidence']
-</pre><h3>Mutant 90</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="90">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #90</span>
+    <span class="mutant-summary"><span class="del">- best_pred, best_conf, best_si = None, -1.0, -1</span>  <span class="add">+ best_pred, best_conf, best_si = None, -2.0, -1</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -94,7 +94,7 @@
      report_verdicts = {}
@@ -628,7 +1545,17 @@
              for si in mentioned_in[cond]:
                  pred = all_sentence_preds[si][cond]['prediction']
                  conf = all_sentence_preds[si][cond]['confidence']
-</pre><h3>Mutant 91</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="91">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #91</span>
+    <span class="mutant-summary"><span class="del">- best_pred, best_conf, best_si = None, -1.0, -1</span>  <span class="add">+ best_pred, best_conf, best_si = None, -1.0, +1</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -94,7 +94,7 @@
      report_verdicts = {}
@@ -639,7 +1566,17 @@
              for si in mentioned_in[cond]:
                  pred = all_sentence_preds[si][cond]['prediction']
                  conf = all_sentence_preds[si][cond]['confidence']
-</pre><h3>Mutant 92</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="92">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #92</span>
+    <span class="mutant-summary"><span class="del">- best_pred, best_conf, best_si = None, -1.0, -1</span>  <span class="add">+ best_pred, best_conf, best_si = None, -1.0, -2</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -94,7 +94,7 @@
      report_verdicts = {}
@@ -650,7 +1587,17 @@
              for si in mentioned_in[cond]:
                  pred = all_sentence_preds[si][cond]['prediction']
                  conf = all_sentence_preds[si][cond]['confidence']
-</pre><h3>Mutant 93</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="93">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #93</span>
+    <span class="mutant-summary"><span class="del">- best_pred, best_conf, best_si = None, -1.0, -1</span>  <span class="add">+ best_pred, best_conf, best_si = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -94,7 +94,7 @@
      report_verdicts = {}
@@ -661,7 +1608,17 @@
              for si in mentioned_in[cond]:
                  pred = all_sentence_preds[si][cond]['prediction']
                  conf = all_sentence_preds[si][cond]['confidence']
-</pre><h3>Mutant 94</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="94">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #94</span>
+    <span class="mutant-summary"><span class="del">- pred = all_sentence_preds[si][cond]['prediction']</span>  <span class="add">+ pred = all_sentence_preds[si][cond]['XXpredictionXX']</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -96,7 +96,7 @@
          if mentioned_in[cond]:
@@ -671,8 +1628,18 @@
 +                pred = all_sentence_preds[si][cond]['XXpredictionXX']
                  conf = all_sentence_preds[si][cond]['confidence']
                  if (best_pred is None or
-                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
-</pre><h3>Mutant 95</h3><pre>--- inference/pipeline.py
+                         ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="95">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #95</span>
+    <span class="mutant-summary"><span class="del">- pred = all_sentence_preds[si][cond]['prediction']</span>  <span class="add">+ pred = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -96,7 +96,7 @@
          if mentioned_in[cond]:
@@ -682,8 +1649,18 @@
 +                pred = None
                  conf = all_sentence_preds[si][cond]['confidence']
                  if (best_pred is None or
-                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
-</pre><h3>Mutant 96</h3><pre>--- inference/pipeline.py
+                         ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="96">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #96</span>
+    <span class="mutant-summary"><span class="del">- conf = all_sentence_preds[si][cond]['confidence']</span>  <span class="add">+ conf = all_sentence_preds[si][cond]['XXconfidenceXX']</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -97,7 +97,7 @@
              best_pred, best_conf, best_si = None, -1.0, -1
@@ -692,9 +1669,19 @@
 -                conf = all_sentence_preds[si][cond]['confidence']
 +                conf = all_sentence_preds[si][cond]['XXconfidenceXX']
                  if (best_pred is None or
-                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
                          (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
-</pre><h3>Mutant 97</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="97">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #97</span>
+    <span class="mutant-summary"><span class="del">- conf = all_sentence_preds[si][cond]['confidence']</span>  <span class="add">+ conf = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -97,7 +97,7 @@
              best_pred, best_conf, best_si = None, -1.0, -1
@@ -703,9 +1690,19 @@
 -                conf = all_sentence_preds[si][cond]['confidence']
 +                conf = None
                  if (best_pred is None or
-                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
                          (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
-</pre><h3>Mutant 98</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="98">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #98</span>
+    <span class="mutant-summary"><span class="del">- if (best_pred is None or</span>  <span class="add">+ if (best_pred is not None or</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -98,7 +98,7 @@
              for si in mentioned_in[cond]:
@@ -713,55 +1710,105 @@
                  conf = all_sentence_preds[si][cond]['confidence']
 -                if (best_pred is None or
 +                if (best_pred is not None or
-                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
                          (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
-                          and conf > best_conf)):
-</pre><h3>Mutant 99</h3><pre>--- inference/pipeline.py
+                          and conf &gt; best_conf)):
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="99">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #99</span>
+    <span class="mutant-summary"><span class="del">- ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or</span>  <span class="add">+ ERROR_PRIORITY[pred] &gt;= ERROR_PRIORITY[best_pred] or</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -99,7 +99,7 @@
                  pred = all_sentence_preds[si][cond]['prediction']
                  conf = all_sentence_preds[si][cond]['confidence']
                  if (best_pred is None or
--                        ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
-+                        ERROR_PRIORITY[pred] >= ERROR_PRIORITY[best_pred] or
+-                        ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
++                        ERROR_PRIORITY[pred] &gt;= ERROR_PRIORITY[best_pred] or
                          (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
-                          and conf > best_conf)):
+                          and conf &gt; best_conf)):
                      best_pred, best_conf, best_si = pred, conf, si
-</pre><h3>Mutant 100</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="100">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #100</span>
+    <span class="mutant-summary"><span class="del">- (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]</span>  <span class="add">+ (ERROR_PRIORITY[pred] != ERROR_PRIORITY[best_pred]</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -100,7 +100,7 @@
                  conf = all_sentence_preds[si][cond]['confidence']
                  if (best_pred is None or
-                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
 -                        (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
 +                        (ERROR_PRIORITY[pred] != ERROR_PRIORITY[best_pred]
-                          and conf > best_conf)):
+                          and conf &gt; best_conf)):
                      best_pred, best_conf, best_si = pred, conf, si
  
-</pre><h3>Mutant 101</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="101">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #101</span>
+    <span class="mutant-summary"><span class="del">- and conf &gt; best_conf)):</span>  <span class="add">+ and conf &gt;= best_conf)):</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -101,7 +101,7 @@
                  if (best_pred is None or
-                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
                          (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
--                         and conf > best_conf)):
-+                         and conf >= best_conf)):
+-                         and conf &gt; best_conf)):
++                         and conf &gt;= best_conf)):
                      best_pred, best_conf, best_si = pred, conf, si
  
              report_verdicts[cond] = {
-</pre><h3>Mutant 102</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="102">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #102</span>
+    <span class="mutant-summary"><span class="del">- (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]</span>  <span class="add">+ (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred] or conf &gt; best_conf)):</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -100,8 +100,7 @@
                  conf = all_sentence_preds[si][cond]['confidence']
                  if (best_pred is None or
-                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
 -                        (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
--                         and conf > best_conf)):
-+                        (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred] or conf > best_conf)):
+-                         and conf &gt; best_conf)):
++                        (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred] or conf &gt; best_conf)):
                      best_pred, best_conf, best_si = pred, conf, si
  
              report_verdicts[cond] = {
-</pre><h3>Mutant 103</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="103">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #103</span>
+    <span class="mutant-summary"><span class="del">- if (best_pred is None or</span>  <span class="add">+ if (best_pred is None and</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -98,7 +98,7 @@
              for si in mentioned_in[cond]:
@@ -769,21 +1816,41 @@
                  conf = all_sentence_preds[si][cond]['confidence']
 -                if (best_pred is None or
 +                if (best_pred is None and
-                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
                          (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
-                          and conf > best_conf)):
-</pre><h3>Mutant 104</h3><pre>--- inference/pipeline.py
+                          and conf &gt; best_conf)):
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="104">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #104</span>
+    <span class="mutant-summary"><span class="del">- best_pred, best_conf, best_si = pred, conf, si</span>  <span class="add">+ best_pred, best_conf, best_si = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -102,7 +102,7 @@
-                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         ERROR_PRIORITY[pred] &gt; ERROR_PRIORITY[best_pred] or
                          (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
-                          and conf > best_conf)):
+                          and conf &gt; best_conf)):
 -                    best_pred, best_conf, best_si = pred, conf, si
 +                    best_pred, best_conf, best_si = None
  
              report_verdicts[cond] = {
                  'verdict':     best_pred,
-</pre><h3>Mutant 105</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="105">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #105</span>
+    <span class="mutant-summary"><span class="del">- 'verdict':     best_pred,</span>  <span class="add">+ 'XXverdictXX':     best_pred,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -105,7 +105,7 @@
                      best_pred, best_conf, best_si = pred, conf, si
@@ -792,9 +1859,19 @@
 -                'verdict':     best_pred,
 +                'XXverdictXX':     best_pred,
                  'confidence':  best_conf,
-                 'source':      f"Sentence {best_si + 1}",
+                 'source':      f&quot;Sentence {best_si + 1}&quot;,
                  'source_text': sentences[best_si],
-</pre><h3>Mutant 106</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="106">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #106</span>
+    <span class="mutant-summary"><span class="del">- 'confidence':  best_conf,</span>  <span class="add">+ 'XXconfidenceXX':  best_conf,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -106,7 +106,7 @@
  
@@ -802,90 +1879,170 @@
                  'verdict':     best_pred,
 -                'confidence':  best_conf,
 +                'XXconfidenceXX':  best_conf,
-                 'source':      f"Sentence {best_si + 1}",
+                 'source':      f&quot;Sentence {best_si + 1}&quot;,
                  'source_text': sentences[best_si],
                  'mentioned':   True,
-</pre><h3>Mutant 107</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="107">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #107</span>
+    <span class="mutant-summary"><span class="del">- 'source':      f&quot;Sentence {best_si + 1}&quot;,</span>  <span class="add">+ 'XXsourceXX':      f&quot;Sentence {best_si + 1}&quot;,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -107,7 +107,7 @@
              report_verdicts[cond] = {
                  'verdict':     best_pred,
                  'confidence':  best_conf,
--                'source':      f"Sentence {best_si + 1}",
-+                'XXsourceXX':      f"Sentence {best_si + 1}",
+-                'source':      f&quot;Sentence {best_si + 1}&quot;,
++                'XXsourceXX':      f&quot;Sentence {best_si + 1}&quot;,
                  'source_text': sentences[best_si],
                  'mentioned':   True,
                  't2_present':  all_t2_preds[best_si][cond]['present'],
-</pre><h3>Mutant 108</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="108">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #108</span>
+    <span class="mutant-summary"><span class="del">- 'source':      f&quot;Sentence {best_si + 1}&quot;,</span>  <span class="add">+ 'source':      f&quot;Sentence {best_si - 1}&quot;,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -107,7 +107,7 @@
              report_verdicts[cond] = {
                  'verdict':     best_pred,
                  'confidence':  best_conf,
--                'source':      f"Sentence {best_si + 1}",
-+                'source':      f"Sentence {best_si - 1}",
+-                'source':      f&quot;Sentence {best_si + 1}&quot;,
++                'source':      f&quot;Sentence {best_si - 1}&quot;,
                  'source_text': sentences[best_si],
                  'mentioned':   True,
                  't2_present':  all_t2_preds[best_si][cond]['present'],
-</pre><h3>Mutant 109</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="109">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #109</span>
+    <span class="mutant-summary"><span class="del">- 'source':      f&quot;Sentence {best_si + 1}&quot;,</span>  <span class="add">+ 'source':      f&quot;Sentence {best_si + 2}&quot;,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -107,7 +107,7 @@
              report_verdicts[cond] = {
                  'verdict':     best_pred,
                  'confidence':  best_conf,
--                'source':      f"Sentence {best_si + 1}",
-+                'source':      f"Sentence {best_si + 2}",
+-                'source':      f&quot;Sentence {best_si + 1}&quot;,
++                'source':      f&quot;Sentence {best_si + 2}&quot;,
                  'source_text': sentences[best_si],
                  'mentioned':   True,
                  't2_present':  all_t2_preds[best_si][cond]['present'],
-</pre><h3>Mutant 110</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="110">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #110</span>
+    <span class="mutant-summary"><span class="del">- 'source':      f&quot;Sentence {best_si + 1}&quot;,</span>  <span class="add">+ 'source':      f&quot;XXSentence {best_si + 1}XX&quot;,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -107,7 +107,7 @@
              report_verdicts[cond] = {
                  'verdict':     best_pred,
                  'confidence':  best_conf,
--                'source':      f"Sentence {best_si + 1}",
-+                'source':      f"XXSentence {best_si + 1}XX",
+-                'source':      f&quot;Sentence {best_si + 1}&quot;,
++                'source':      f&quot;XXSentence {best_si + 1}XX&quot;,
                  'source_text': sentences[best_si],
                  'mentioned':   True,
                  't2_present':  all_t2_preds[best_si][cond]['present'],
-</pre><h3>Mutant 111</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="111">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #111</span>
+    <span class="mutant-summary"><span class="del">- 'source_text': sentences[best_si],</span>  <span class="add">+ 'XXsource_textXX': sentences[best_si],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -108,7 +108,7 @@
                  'verdict':     best_pred,
                  'confidence':  best_conf,
-                 'source':      f"Sentence {best_si + 1}",
+                 'source':      f&quot;Sentence {best_si + 1}&quot;,
 -                'source_text': sentences[best_si],
 +                'XXsource_textXX': sentences[best_si],
                  'mentioned':   True,
                  't2_present':  all_t2_preds[best_si][cond]['present'],
                  't2_conf':     all_t2_preds[best_si][cond]['confidence'],
-</pre><h3>Mutant 112</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="112">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #112</span>
+    <span class="mutant-summary"><span class="del">- 'mentioned':   True,</span>  <span class="add">+ 'XXmentionedXX':   True,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -109,7 +109,7 @@
                  'confidence':  best_conf,
-                 'source':      f"Sentence {best_si + 1}",
+                 'source':      f&quot;Sentence {best_si + 1}&quot;,
                  'source_text': sentences[best_si],
 -                'mentioned':   True,
 +                'XXmentionedXX':   True,
                  't2_present':  all_t2_preds[best_si][cond]['present'],
                  't2_conf':     all_t2_preds[best_si][cond]['confidence'],
                  'probs':       all_sentence_preds[best_si][cond]['probs'],
-</pre><h3>Mutant 113</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="113">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #113</span>
+    <span class="mutant-summary"><span class="del">- 'mentioned':   True,</span>  <span class="add">+ 'mentioned':   False,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -109,7 +109,7 @@
                  'confidence':  best_conf,
-                 'source':      f"Sentence {best_si + 1}",
+                 'source':      f&quot;Sentence {best_si + 1}&quot;,
                  'source_text': sentences[best_si],
 -                'mentioned':   True,
 +                'mentioned':   False,
                  't2_present':  all_t2_preds[best_si][cond]['present'],
                  't2_conf':     all_t2_preds[best_si][cond]['confidence'],
                  'probs':       all_sentence_preds[best_si][cond]['probs'],
-</pre><h3>Mutant 114</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="114">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #114</span>
+    <span class="mutant-summary"><span class="del">- 't2_present':  all_t2_preds[best_si][cond]['present'],</span>  <span class="add">+ 'XXt2_presentXX':  all_t2_preds[best_si][cond]['present'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -110,7 +110,7 @@
-                 'source':      f"Sentence {best_si + 1}",
+                 'source':      f&quot;Sentence {best_si + 1}&quot;,
                  'source_text': sentences[best_si],
                  'mentioned':   True,
 -                't2_present':  all_t2_preds[best_si][cond]['present'],
@@ -893,10 +2050,20 @@
                  't2_conf':     all_t2_preds[best_si][cond]['confidence'],
                  'probs':       all_sentence_preds[best_si][cond]['probs'],
                  'meaning':     ERROR_MEANING.get(best_pred, ''),
-</pre><h3>Mutant 115</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="115">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #115</span>
+    <span class="mutant-summary"><span class="del">- 't2_present':  all_t2_preds[best_si][cond]['present'],</span>  <span class="add">+ 't2_present':  all_t2_preds[best_si][cond]['XXpresentXX'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -110,7 +110,7 @@
-                 'source':      f"Sentence {best_si + 1}",
+                 'source':      f&quot;Sentence {best_si + 1}&quot;,
                  'source_text': sentences[best_si],
                  'mentioned':   True,
 -                't2_present':  all_t2_preds[best_si][cond]['present'],
@@ -904,7 +2071,17 @@
                  't2_conf':     all_t2_preds[best_si][cond]['confidence'],
                  'probs':       all_sentence_preds[best_si][cond]['probs'],
                  'meaning':     ERROR_MEANING.get(best_pred, ''),
-</pre><h3>Mutant 116</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="116">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #116</span>
+    <span class="mutant-summary"><span class="del">- 't2_conf':     all_t2_preds[best_si][cond]['confidence'],</span>  <span class="add">+ 'XXt2_confXX':     all_t2_preds[best_si][cond]['confidence'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -111,7 +111,7 @@
                  'source_text': sentences[best_si],
@@ -915,7 +2092,17 @@
                  'probs':       all_sentence_preds[best_si][cond]['probs'],
                  'meaning':     ERROR_MEANING.get(best_pred, ''),
              }
-</pre><h3>Mutant 117</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="117">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #117</span>
+    <span class="mutant-summary"><span class="del">- 't2_conf':     all_t2_preds[best_si][cond]['confidence'],</span>  <span class="add">+ 't2_conf':     all_t2_preds[best_si][cond]['XXconfidenceXX'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -111,7 +111,7 @@
                  'source_text': sentences[best_si],
@@ -926,7 +2113,17 @@
                  'probs':       all_sentence_preds[best_si][cond]['probs'],
                  'meaning':     ERROR_MEANING.get(best_pred, ''),
              }
-</pre><h3>Mutant 118</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="118">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #118</span>
+    <span class="mutant-summary"><span class="del">- 'probs':       all_sentence_preds[best_si][cond]['probs'],</span>  <span class="add">+ 'XXprobsXX':       all_sentence_preds[best_si][cond]['probs'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -112,7 +112,7 @@
                  'mentioned':   True,
@@ -937,7 +2134,17 @@
                  'meaning':     ERROR_MEANING.get(best_pred, ''),
              }
          else:
-</pre><h3>Mutant 119</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="119">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #119</span>
+    <span class="mutant-summary"><span class="del">- 'probs':       all_sentence_preds[best_si][cond]['probs'],</span>  <span class="add">+ 'probs':       all_sentence_preds[best_si][cond]['XXprobsXX'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -112,7 +112,7 @@
                  'mentioned':   True,
@@ -948,7 +2155,17 @@
                  'meaning':     ERROR_MEANING.get(best_pred, ''),
              }
          else:
-</pre><h3>Mutant 120</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="120">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #120</span>
+    <span class="mutant-summary"><span class="del">- 'meaning':     ERROR_MEANING.get(best_pred, ''),</span>  <span class="add">+ 'XXmeaningXX':     ERROR_MEANING.get(best_pred, ''),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -113,7 +113,7 @@
                  't2_present':  all_t2_preds[best_si][cond]['present'],
@@ -959,7 +2176,17 @@
              }
          else:
              t2_present = all_t2_preds[0][cond]['present']
-</pre><h3>Mutant 121</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="121">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #121</span>
+    <span class="mutant-summary"><span class="del">- 'meaning':     ERROR_MEANING.get(best_pred, ''),</span>  <span class="add">+ 'meaning':     ERROR_MEANING.get(best_pred, 'XXXX'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -113,7 +113,7 @@
                  't2_present':  all_t2_preds[best_si][cond]['present'],
@@ -970,16 +2197,26 @@
              }
          else:
              t2_present = all_t2_preds[0][cond]['present']
-</pre><h3>Mutant 122</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="122">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #122</span>
+    <span class="mutant-summary"><span class="del">- report_verdicts[cond] = {</span>  <span class="add">+ report_verdicts[cond] = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -104,17 +104,7 @@
-                          and conf > best_conf)):
+                          and conf &gt; best_conf)):
                      best_pred, best_conf, best_si = pred, conf, si
  
 -            report_verdicts[cond] = {
 -                'verdict':     best_pred,
 -                'confidence':  best_conf,
--                'source':      f"Sentence {best_si + 1}",
+-                'source':      f&quot;Sentence {best_si + 1}&quot;,
 -                'source_text': sentences[best_si],
 -                'mentioned':   True,
 -                't2_present':  all_t2_preds[best_si][cond]['present'],
@@ -991,7 +2228,17 @@
          else:
              t2_present = all_t2_preds[0][cond]['present']
              t2_conf    = all_t2_preds[0][cond]['confidence']
-</pre><h3>Mutant 135</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="135">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #135</span>
+    <span class="mutant-summary"><span class="del">- 'confidence':  t2_conf,</span>  <span class="add">+ 'XXconfidenceXX':  t2_conf,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -122,7 +122,7 @@
                            else 'NOT_MENTIONED')
@@ -1002,7 +2249,17 @@
                  'source':      'Not mentioned in report',
                  'source_text': '',
                  'mentioned':   False,
-</pre><h3>Mutant 136</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="136">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #136</span>
+    <span class="mutant-summary"><span class="del">- 'source':      'Not mentioned in report',</span>  <span class="add">+ 'XXsourceXX':      'Not mentioned in report',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -123,7 +123,7 @@
              report_verdicts[cond] = {
@@ -1013,7 +2270,17 @@
                  'source_text': '',
                  'mentioned':   False,
                  't2_present':  t2_present,
-</pre><h3>Mutant 137</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="137">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #137</span>
+    <span class="mutant-summary"><span class="del">- 'source':      'Not mentioned in report',</span>  <span class="add">+ 'source':      'XXNot mentioned in reportXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -123,7 +123,7 @@
              report_verdicts[cond] = {
@@ -1024,7 +2291,17 @@
                  'source_text': '',
                  'mentioned':   False,
                  't2_present':  t2_present,
-</pre><h3>Mutant 138</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="138">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #138</span>
+    <span class="mutant-summary"><span class="del">- 'source_text': '',</span>  <span class="add">+ 'XXsource_textXX': '',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -124,7 +124,7 @@
                  'verdict':     verdict,
@@ -1035,7 +2312,17 @@
                  'mentioned':   False,
                  't2_present':  t2_present,
                  't2_conf':     t2_conf,
-</pre><h3>Mutant 139</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="139">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #139</span>
+    <span class="mutant-summary"><span class="del">- 'source_text': '',</span>  <span class="add">+ 'source_text': 'XXXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -124,7 +124,7 @@
                  'verdict':     verdict,
@@ -1046,7 +2333,17 @@
                  'mentioned':   False,
                  't2_present':  t2_present,
                  't2_conf':     t2_conf,
-</pre><h3>Mutant 140</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="140">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #140</span>
+    <span class="mutant-summary"><span class="del">- 'mentioned':   False,</span>  <span class="add">+ 'XXmentionedXX':   False,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -125,7 +125,7 @@
                  'confidence':  t2_conf,
@@ -1057,7 +2354,17 @@
                  't2_present':  t2_present,
                  't2_conf':     t2_conf,
                  'probs':       {k: 0.0 for k in
-</pre><h3>Mutant 141</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="141">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #141</span>
+    <span class="mutant-summary"><span class="del">- 'mentioned':   False,</span>  <span class="add">+ 'mentioned':   True,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -125,7 +125,7 @@
                  'confidence':  t2_conf,
@@ -1068,7 +2375,17 @@
                  't2_present':  t2_present,
                  't2_conf':     t2_conf,
                  'probs':       {k: 0.0 for k in
-</pre><h3>Mutant 142</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="142">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #142</span>
+    <span class="mutant-summary"><span class="del">- 't2_present':  t2_present,</span>  <span class="add">+ 'XXt2_presentXX':  t2_present,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -126,7 +126,7 @@
                  'source':      'Not mentioned in report',
@@ -1079,7 +2396,17 @@
                  't2_conf':     t2_conf,
                  'probs':       {k: 0.0 for k in
                                  ['SUPPORTED','HALLUCINATED',
-</pre><h3>Mutant 143</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="143">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #143</span>
+    <span class="mutant-summary"><span class="del">- 't2_conf':     t2_conf,</span>  <span class="add">+ 'XXt2_confXX':     t2_conf,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -127,7 +127,7 @@
                  'source_text': '',
@@ -1090,7 +2417,17 @@
                  'probs':       {k: 0.0 for k in
                                  ['SUPPORTED','HALLUCINATED',
                                   'MISSING','INACCURATE']},
-</pre><h3>Mutant 144</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="144">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #144</span>
+    <span class="mutant-summary"><span class="del">- 'probs':       {k: 0.0 for k in</span>  <span class="add">+ 'XXprobsXX':       {k: 0.0 for k in</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -128,7 +128,7 @@
                  'mentioned':   False,
@@ -1101,7 +2438,17 @@
                                  ['SUPPORTED','HALLUCINATED',
                                   'MISSING','INACCURATE']},
                  'meaning':     ERROR_MEANING.get(verdict, ''),
-</pre><h3>Mutant 145</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="145">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #145</span>
+    <span class="mutant-summary"><span class="del">- 'probs':       {k: 0.0 for k in</span>  <span class="add">+ 'probs':       {k: 1.0 for k in</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -128,7 +128,7 @@
                  'mentioned':   False,
@@ -1112,7 +2459,17 @@
                                  ['SUPPORTED','HALLUCINATED',
                                   'MISSING','INACCURATE']},
                  'meaning':     ERROR_MEANING.get(verdict, ''),
-</pre><h3>Mutant 146</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="146">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #146</span>
+    <span class="mutant-summary"><span class="del">- ['SUPPORTED','HALLUCINATED',</span>  <span class="add">+ ['XXSUPPORTEDXX','HALLUCINATED',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -129,7 +129,7 @@
                  't2_present':  t2_present,
@@ -1123,7 +2480,17 @@
                                   'MISSING','INACCURATE']},
                  'meaning':     ERROR_MEANING.get(verdict, ''),
              }
-</pre><h3>Mutant 147</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="147">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #147</span>
+    <span class="mutant-summary"><span class="del">- ['SUPPORTED','HALLUCINATED',</span>  <span class="add">+ ['SUPPORTED','XXHALLUCINATEDXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -129,7 +129,7 @@
                  't2_present':  t2_present,
@@ -1134,7 +2501,17 @@
                                   'MISSING','INACCURATE']},
                  'meaning':     ERROR_MEANING.get(verdict, ''),
              }
-</pre><h3>Mutant 148</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="148">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #148</span>
+    <span class="mutant-summary"><span class="del">- 'MISSING','INACCURATE']},</span>  <span class="add">+ 'XXMISSINGXX','INACCURATE']},</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -130,7 +130,7 @@
                  't2_conf':     t2_conf,
@@ -1145,7 +2522,17 @@
                  'meaning':     ERROR_MEANING.get(verdict, ''),
              }
  
-</pre><h3>Mutant 149</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="149">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #149</span>
+    <span class="mutant-summary"><span class="del">- 'MISSING','INACCURATE']},</span>  <span class="add">+ 'MISSING','XXINACCURATEXX']},</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -130,7 +130,7 @@
                  't2_conf':     t2_conf,
@@ -1156,7 +2543,17 @@
                  'meaning':     ERROR_MEANING.get(verdict, ''),
              }
  
-</pre><h3>Mutant 150</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="150">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #150</span>
+    <span class="mutant-summary"><span class="del">- 'meaning':     ERROR_MEANING.get(verdict, ''),</span>  <span class="add">+ 'XXmeaningXX':     ERROR_MEANING.get(verdict, ''),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -131,7 +131,7 @@
                  'probs':       {k: 0.0 for k in
@@ -1167,7 +2564,17 @@
              }
  
      return report_verdicts
-</pre><h3>Mutant 151</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="151">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #151</span>
+    <span class="mutant-summary"><span class="del">- 'meaning':     ERROR_MEANING.get(verdict, ''),</span>  <span class="add">+ 'meaning':     ERROR_MEANING.get(verdict, 'XXXX'),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -131,7 +131,7 @@
                  'probs':       {k: 0.0 for k in
@@ -1178,7 +2585,17 @@
              }
  
      return report_verdicts
-</pre><h3>Mutant 167</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="167">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #167</span>
+    <span class="mutant-summary"><span class="del">- 'grade_color': '#4CAF50',</span>  <span class="add">+ 'XXgrade_colorXX': '#4CAF50',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -148,7 +148,7 @@
      if not active:
@@ -1189,7 +2606,17 @@
              'grade_desc': 'No active conditions',
              'active_count': 0,
              'not_mentioned_count': not_mentioned_count,
-</pre><h3>Mutant 168</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="168">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #168</span>
+    <span class="mutant-summary"><span class="del">- 'grade_color': '#4CAF50',</span>  <span class="add">+ 'grade_color': 'XX#4CAF50XX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -148,7 +148,7 @@
      if not active:
@@ -1200,7 +2627,17 @@
              'grade_desc': 'No active conditions',
              'active_count': 0,
              'not_mentioned_count': not_mentioned_count,
-</pre><h3>Mutant 169</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="169">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #169</span>
+    <span class="mutant-summary"><span class="del">- 'grade_desc': 'No active conditions',</span>  <span class="add">+ 'XXgrade_descXX': 'No active conditions',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -149,7 +149,7 @@
          return {
@@ -1211,7 +2648,17 @@
              'active_count': 0,
              'not_mentioned_count': not_mentioned_count,
              'supported_count': 0, 'hallucinated_count': 0,
-</pre><h3>Mutant 170</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="170">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #170</span>
+    <span class="mutant-summary"><span class="del">- 'grade_desc': 'No active conditions',</span>  <span class="add">+ 'grade_desc': 'XXNo active conditionsXX',</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -149,7 +149,7 @@
          return {
@@ -1222,7 +2669,17 @@
              'active_count': 0,
              'not_mentioned_count': not_mentioned_count,
              'supported_count': 0, 'hallucinated_count': 0,
-</pre><h3>Mutant 174</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="174">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #174</span>
+    <span class="mutant-summary"><span class="del">- 'supported_count': 0, 'hallucinated_count': 0,</span>  <span class="add">+ 'XXsupported_countXX': 0, 'hallucinated_count': 0,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -152,7 +152,7 @@
              'grade_desc': 'No active conditions',
@@ -1233,7 +2690,17 @@
              'missing_count': 0, 'inaccurate_count': 0,
          }
  
-</pre><h3>Mutant 175</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="175">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #175</span>
+    <span class="mutant-summary"><span class="del">- 'supported_count': 0, 'hallucinated_count': 0,</span>  <span class="add">+ 'supported_count': 1, 'hallucinated_count': 0,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -152,7 +152,7 @@
              'grade_desc': 'No active conditions',
@@ -1244,7 +2711,17 @@
              'missing_count': 0, 'inaccurate_count': 0,
          }
  
-</pre><h3>Mutant 176</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="176">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #176</span>
+    <span class="mutant-summary"><span class="del">- 'supported_count': 0, 'hallucinated_count': 0,</span>  <span class="add">+ 'supported_count': 0, 'XXhallucinated_countXX': 0,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -152,7 +152,7 @@
              'grade_desc': 'No active conditions',
@@ -1255,7 +2732,17 @@
              'missing_count': 0, 'inaccurate_count': 0,
          }
  
-</pre><h3>Mutant 177</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="177">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #177</span>
+    <span class="mutant-summary"><span class="del">- 'supported_count': 0, 'hallucinated_count': 0,</span>  <span class="add">+ 'supported_count': 0, 'hallucinated_count': 1,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -152,7 +152,7 @@
              'grade_desc': 'No active conditions',
@@ -1266,7 +2753,17 @@
              'missing_count': 0, 'inaccurate_count': 0,
          }
  
-</pre><h3>Mutant 178</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="178">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #178</span>
+    <span class="mutant-summary"><span class="del">- 'missing_count': 0, 'inaccurate_count': 0,</span>  <span class="add">+ 'XXmissing_countXX': 0, 'inaccurate_count': 0,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -153,7 +153,7 @@
              'active_count': 0,
@@ -1277,7 +2774,17 @@
          }
  
      raw_score    = 0.0
-</pre><h3>Mutant 179</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="179">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #179</span>
+    <span class="mutant-summary"><span class="del">- 'missing_count': 0, 'inaccurate_count': 0,</span>  <span class="add">+ 'missing_count': 1, 'inaccurate_count': 0,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -153,7 +153,7 @@
              'active_count': 0,
@@ -1288,7 +2795,17 @@
          }
  
      raw_score    = 0.0
-</pre><h3>Mutant 180</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="180">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #180</span>
+    <span class="mutant-summary"><span class="del">- 'missing_count': 0, 'inaccurate_count': 0,</span>  <span class="add">+ 'missing_count': 0, 'XXinaccurate_countXX': 0,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -153,7 +153,7 @@
              'active_count': 0,
@@ -1299,7 +2816,17 @@
          }
  
      raw_score    = 0.0
-</pre><h3>Mutant 181</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="181">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #181</span>
+    <span class="mutant-summary"><span class="del">- 'missing_count': 0, 'inaccurate_count': 0,</span>  <span class="add">+ 'missing_count': 0, 'inaccurate_count': 1,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -153,7 +153,7 @@
              'active_count': 0,
@@ -1310,7 +2837,17 @@
          }
  
      raw_score    = 0.0
-</pre><h3>Mutant 196</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="196">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #196</span>
+    <span class="mutant-summary"><span class="del">- weight    = ELRRS_WEIGHTS.get(verdict, 0.0)</span>  <span class="add">+ weight    = ELRRS_WEIGHTS.get(verdict, 1.0)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -165,7 +165,7 @@
  
@@ -1321,7 +2858,17 @@
          raw_score += weight
          if verdict in counts:
              counts[verdict] += 1
-</pre><h3>Mutant 208</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="208">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #208</span>
+    <span class="mutant-summary"><span class="del">- score = float(np.clip((raw_score / max_possible) * 100.0, 0, 100))</span>  <span class="add">+ score = float(np.clip((raw_score / max_possible) * 100.0, 0, 101))</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -170,7 +170,7 @@
          if verdict in counts:
@@ -1332,7 +2879,17 @@
  
      grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'
      for threshold, g, gc, gd in ELRRS_GRADES:
-</pre><h3>Mutant 210</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="210">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #210</span>
+    <span class="mutant-summary"><span class="del">- grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'</span>  <span class="add">+ grade, grade_color, grade_desc = 'XXCriticalXX', '#9C27B0', 'Severe errors'</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -172,7 +172,7 @@
  
@@ -1341,9 +2898,19 @@
 -    grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'
 +    grade, grade_color, grade_desc = 'XXCriticalXX', '#9C27B0', 'Severe errors'
      for threshold, g, gc, gd in ELRRS_GRADES:
-         if score >= threshold:
+         if score &gt;= threshold:
              grade, grade_color, grade_desc = g, gc, gd
-</pre><h3>Mutant 211</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="211">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #211</span>
+    <span class="mutant-summary"><span class="del">- grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'</span>  <span class="add">+ grade, grade_color, grade_desc = 'Critical', 'XX#9C27B0XX', 'Severe errors'</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -172,7 +172,7 @@
  
@@ -1352,9 +2919,19 @@
 -    grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'
 +    grade, grade_color, grade_desc = 'Critical', 'XX#9C27B0XX', 'Severe errors'
      for threshold, g, gc, gd in ELRRS_GRADES:
-         if score >= threshold:
+         if score &gt;= threshold:
              grade, grade_color, grade_desc = g, gc, gd
-</pre><h3>Mutant 212</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="212">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #212</span>
+    <span class="mutant-summary"><span class="del">- grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'</span>  <span class="add">+ grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'XXSevere errorsXX'</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -172,7 +172,7 @@
  
@@ -1363,9 +2940,19 @@
 -    grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'
 +    grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'XXSevere errorsXX'
      for threshold, g, gc, gd in ELRRS_GRADES:
-         if score >= threshold:
+         if score &gt;= threshold:
              grade, grade_color, grade_desc = g, gc, gd
-</pre><h3>Mutant 218</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="218">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #218</span>
+    <span class="mutant-summary"><span class="del">- 'score':               round(score, 2),</span>  <span class="add">+ 'score':               round(score, 3),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -179,7 +179,7 @@
              break
@@ -1376,7 +2963,17 @@
          'grade':               grade,
          'grade_color':         grade_color,
          'grade_desc':          grade_desc,
-</pre><h3>Mutant 220</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="220">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #220</span>
+    <span class="mutant-summary"><span class="del">- 'grade_color':         grade_color,</span>  <span class="add">+ 'XXgrade_colorXX':         grade_color,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -181,7 +181,7 @@
      return {
@@ -1387,7 +2984,17 @@
          'grade_desc':          grade_desc,
          'active_count':        len(active),
          'not_mentioned_count': not_mentioned_count,
-</pre><h3>Mutant 221</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="221">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #221</span>
+    <span class="mutant-summary"><span class="del">- 'grade_desc':          grade_desc,</span>  <span class="add">+ 'XXgrade_descXX':          grade_desc,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -182,7 +182,7 @@
          'score':               round(score, 2),
@@ -1398,7 +3005,17 @@
          'active_count':        len(active),
          'not_mentioned_count': not_mentioned_count,
          'supported_count':     counts['SUPPORTED'],
-</pre><h3>Mutant 223</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="223">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #223</span>
+    <span class="mutant-summary"><span class="del">- 'not_mentioned_count': not_mentioned_count,</span>  <span class="add">+ 'XXnot_mentioned_countXX': not_mentioned_count,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -184,7 +184,7 @@
          'grade_color':         grade_color,
@@ -1409,21 +3026,41 @@
          'supported_count':     counts['SUPPORTED'],
          'hallucinated_count':  counts['HALLUCINATED'],
          'missing_count':       counts['MISSING'],
-</pre><h3>Mutant 232</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="232">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #232</span>
+    <span class="mutant-summary"><span class="del">- if device is None:</span>  <span class="add">+ if device is not None:</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -205,7 +205,7 @@
          {elrrs, conditions, not_mentioned}
-     """
+     &quot;&quot;&quot;
      from .model import device as model_device
 -    if device is None:
 +    if device is not None:
          device = model_device
  
      # Step 1: Split
-</pre><h3>Mutant 233</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="233">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #233</span>
+    <span class="mutant-summary"><span class="del">- device = model_device</span>  <span class="add">+ device = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -206,7 +206,7 @@
-     """
+     &quot;&quot;&quot;
      from .model import device as model_device
      if device is None:
 -        device = model_device
@@ -1431,7 +3068,17 @@
  
      # Step 1: Split
      sentences = split_report(ai_report)
-</pre><h3>Mutant 234</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="234">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #234</span>
+    <span class="mutant-summary"><span class="del">- sentences = split_report(ai_report)</span>  <span class="add">+ sentences = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -209,7 +209,7 @@
          device = model_device
@@ -1441,8 +3088,18 @@
 +    sentences = None
      if not sentences:
          sentences = [ai_report]
-     print(f"📝 {len(sentences)} sentence(s)")
-</pre><h3>Mutant 235</h3><pre>--- inference/pipeline.py
+     print(f&quot;📝 {len(sentences)} sentence(s)&quot;)
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="235">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #235</span>
+    <span class="mutant-summary"><span class="del">- if not sentences:</span>  <span class="add">+ if  sentences:</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -210,7 +210,7 @@
  
@@ -1451,9 +3108,19 @@
 -    if not sentences:
 +    if  sentences:
          sentences = [ai_report]
-     print(f"📝 {len(sentences)} sentence(s)")
+     print(f&quot;📝 {len(sentences)} sentence(s)&quot;)
  
-</pre><h3>Mutant 236</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="236">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #236</span>
+    <span class="mutant-summary"><span class="del">- sentences = [ai_report]</span>  <span class="add">+ sentences = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -211,7 +211,7 @@
      # Step 1: Split
@@ -1461,113 +3128,213 @@
      if not sentences:
 -        sentences = [ai_report]
 +        sentences = None
-     print(f"📝 {len(sentences)} sentence(s)")
+     print(f&quot;📝 {len(sentences)} sentence(s)&quot;)
  
      # Step 2: CheXbert
-</pre><h3>Mutant 237</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="237">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #237</span>
+    <span class="mutant-summary"><span class="del">- print(f&quot;📝 {len(sentences)} sentence(s)&quot;)</span>  <span class="add">+ print(f&quot;XX📝 {len(sentences)} sentence(s)XX&quot;)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -212,7 +212,7 @@
      sentences = split_report(ai_report)
      if not sentences:
          sentences = [ai_report]
--    print(f"📝 {len(sentences)} sentence(s)")
-+    print(f"XX📝 {len(sentences)} sentence(s)XX")
+-    print(f&quot;📝 {len(sentences)} sentence(s)&quot;)
++    print(f&quot;XX📝 {len(sentences)} sentence(s)XX&quot;)
  
      # Step 2: CheXbert
      all_chexbert = run_chexbert(sentences)
-</pre><h3>Mutant 238</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="238">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #238</span>
+    <span class="mutant-summary"><span class="del">- all_chexbert = run_chexbert(sentences)</span>  <span class="add">+ all_chexbert = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -215,7 +215,7 @@
-     print(f"📝 {len(sentences)} sentence(s)")
+     print(f&quot;📝 {len(sentences)} sentence(s)&quot;)
  
      # Step 2: CheXbert
 -    all_chexbert = run_chexbert(sentences)
 +    all_chexbert = None
-     print("🔬 CheXbert done")
+     print(&quot;🔬 CheXbert done&quot;)
  
      # Step 3: Model per sentence
-</pre><h3>Mutant 239</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="239">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #239</span>
+    <span class="mutant-summary"><span class="del">- print(&quot;🔬 CheXbert done&quot;)</span>  <span class="add">+ print(&quot;XX🔬 CheXbert doneXX&quot;)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -216,7 +216,7 @@
  
      # Step 2: CheXbert
      all_chexbert = run_chexbert(sentences)
--    print("🔬 CheXbert done")
-+    print("XX🔬 CheXbert doneXX")
+-    print(&quot;🔬 CheXbert done&quot;)
++    print(&quot;XX🔬 CheXbert doneXX&quot;)
  
      # Step 3: Model per sentence
      all_sentence_preds, all_t2_preds, all_attn = [], [], []
-</pre><h3>Mutant 240</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="240">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #240</span>
+    <span class="mutant-summary"><span class="del">- all_sentence_preds, all_t2_preds, all_attn = [], [], []</span>  <span class="add">+ all_sentence_preds, all_t2_preds, all_attn = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -219,7 +219,7 @@
-     print("🔬 CheXbert done")
+     print(&quot;🔬 CheXbert done&quot;)
  
      # Step 3: Model per sentence
 -    all_sentence_preds, all_t2_preds, all_attn = [], [], []
 +    all_sentence_preds, all_t2_preds, all_attn = None
      for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
-         print(f"🤖 S{si+1}: {sent[:50]}...")
+         print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)
          chex_t = chexbert_to_tensor(chex, device)
-</pre><h3>Mutant 241</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="241">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #241</span>
+    <span class="mutant-summary"><span class="del">- print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)</span>  <span class="add">+ print(f&quot;🤖 S{si-1}: {sent[:50]}...&quot;)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -221,7 +221,7 @@
      # Step 3: Model per sentence
      all_sentence_preds, all_t2_preds, all_attn = [], [], []
      for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
--        print(f"🤖 S{si+1}: {sent[:50]}...")
-+        print(f"🤖 S{si-1}: {sent[:50]}...")
+-        print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)
++        print(f&quot;🤖 S{si-1}: {sent[:50]}...&quot;)
          chex_t = chexbert_to_tensor(chex, device)
          preds, t2_preds, attn = run_inference_on_sentence(
              image, sent, chex_t)
-</pre><h3>Mutant 242</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="242">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #242</span>
+    <span class="mutant-summary"><span class="del">- print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)</span>  <span class="add">+ print(f&quot;🤖 S{si+2}: {sent[:50]}...&quot;)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -221,7 +221,7 @@
      # Step 3: Model per sentence
      all_sentence_preds, all_t2_preds, all_attn = [], [], []
      for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
--        print(f"🤖 S{si+1}: {sent[:50]}...")
-+        print(f"🤖 S{si+2}: {sent[:50]}...")
+-        print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)
++        print(f&quot;🤖 S{si+2}: {sent[:50]}...&quot;)
          chex_t = chexbert_to_tensor(chex, device)
          preds, t2_preds, attn = run_inference_on_sentence(
              image, sent, chex_t)
-</pre><h3>Mutant 243</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="243">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #243</span>
+    <span class="mutant-summary"><span class="del">- print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)</span>  <span class="add">+ print(f&quot;🤖 S{si+1}: {sent[:51]}...&quot;)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -221,7 +221,7 @@
      # Step 3: Model per sentence
      all_sentence_preds, all_t2_preds, all_attn = [], [], []
      for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
--        print(f"🤖 S{si+1}: {sent[:50]}...")
-+        print(f"🤖 S{si+1}: {sent[:51]}...")
+-        print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)
++        print(f&quot;🤖 S{si+1}: {sent[:51]}...&quot;)
          chex_t = chexbert_to_tensor(chex, device)
          preds, t2_preds, attn = run_inference_on_sentence(
              image, sent, chex_t)
-</pre><h3>Mutant 244</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="244">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #244</span>
+    <span class="mutant-summary"><span class="del">- print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)</span>  <span class="add">+ print(f&quot;XX🤖 S{si+1}: {sent[:50]}...XX&quot;)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -221,7 +221,7 @@
      # Step 3: Model per sentence
      all_sentence_preds, all_t2_preds, all_attn = [], [], []
      for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
--        print(f"🤖 S{si+1}: {sent[:50]}...")
-+        print(f"XX🤖 S{si+1}: {sent[:50]}...XX")
+-        print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)
++        print(f&quot;XX🤖 S{si+1}: {sent[:50]}...XX&quot;)
          chex_t = chexbert_to_tensor(chex, device)
          preds, t2_preds, attn = run_inference_on_sentence(
              image, sent, chex_t)
-</pre><h3>Mutant 245</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="245">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #245</span>
+    <span class="mutant-summary"><span class="del">- chex_t = chexbert_to_tensor(chex, device)</span>  <span class="add">+ chex_t = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -222,7 +222,7 @@
      all_sentence_preds, all_t2_preds, all_attn = [], [], []
      for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
-         print(f"🤖 S{si+1}: {sent[:50]}...")
+         print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)
 -        chex_t = chexbert_to_tensor(chex, device)
 +        chex_t = None
          preds, t2_preds, attn = run_inference_on_sentence(
              image, sent, chex_t)
          all_sentence_preds.append(preds)
-</pre><h3>Mutant 246</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="246">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #246</span>
+    <span class="mutant-summary"><span class="del">- preds, t2_preds, attn = run_inference_on_sentence(</span>  <span class="add">+ preds, t2_preds, attn = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -223,8 +223,7 @@
      for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
-         print(f"🤖 S{si+1}: {sent[:50]}...")
+         print(f&quot;🤖 S{si+1}: {sent[:50]}...&quot;)
          chex_t = chexbert_to_tensor(chex, device)
 -        preds, t2_preds, attn = run_inference_on_sentence(
 -            image, sent, chex_t)
@@ -1575,7 +3342,17 @@
          all_sentence_preds.append(preds)
          all_t2_preds.append(t2_preds)
          all_attn.append(attn)
-</pre><h3>Mutant 247</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="247">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #247</span>
+    <span class="mutant-summary"><span class="del">- report_verdicts = aggregate_verdicts(</span>  <span class="add">+ report_verdicts = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -230,9 +230,7 @@
          all_attn.append(attn)
@@ -1585,68 +3362,128 @@
 -        sentences, all_sentence_preds,
 -        all_t2_preds, all_chexbert)
 +    report_verdicts = None
-     print("📊 Aggregation done")
+     print(&quot;📊 Aggregation done&quot;)
  
      # Step 5: ELRRs
-</pre><h3>Mutant 248</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="248">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #248</span>
+    <span class="mutant-summary"><span class="del">- print(&quot;📊 Aggregation done&quot;)</span>  <span class="add">+ print(&quot;XX📊 Aggregation doneXX&quot;)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -233,7 +233,7 @@
      report_verdicts = aggregate_verdicts(
          sentences, all_sentence_preds,
          all_t2_preds, all_chexbert)
--    print("📊 Aggregation done")
-+    print("XX📊 Aggregation doneXX")
+-    print(&quot;📊 Aggregation done&quot;)
++    print(&quot;XX📊 Aggregation doneXX&quot;)
  
      # Step 5: ELRRs
      elrrs = compute_elrrs(report_verdicts)
-</pre><h3>Mutant 249</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="249">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #249</span>
+    <span class="mutant-summary"><span class="del">- elrrs = compute_elrrs(report_verdicts)</span>  <span class="add">+ elrrs = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -236,7 +236,7 @@
-     print("📊 Aggregation done")
+     print(&quot;📊 Aggregation done&quot;)
  
      # Step 5: ELRRs
 -    elrrs = compute_elrrs(report_verdicts)
 +    elrrs = None
-     print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}")
+     print(f&quot;⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}&quot;)
  
      # Step 6: Format output
-</pre><h3>Mutant 250</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="250">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #250</span>
+    <span class="mutant-summary"><span class="del">- print(f&quot;⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}&quot;)</span>  <span class="add">+ print(f&quot;⭐ ELRRs: {elrrs['XXscoreXX']} — {elrrs['grade']}&quot;)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -237,7 +237,7 @@
  
      # Step 5: ELRRs
      elrrs = compute_elrrs(report_verdicts)
--    print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}")
-+    print(f"⭐ ELRRs: {elrrs['XXscoreXX']} — {elrrs['grade']}")
+-    print(f&quot;⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}&quot;)
++    print(f&quot;⭐ ELRRs: {elrrs['XXscoreXX']} — {elrrs['grade']}&quot;)
  
      # Step 6: Format output
      active_conditions = []
-</pre><h3>Mutant 251</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="251">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #251</span>
+    <span class="mutant-summary"><span class="del">- print(f&quot;⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}&quot;)</span>  <span class="add">+ print(f&quot;⭐ ELRRs: {elrrs['score']} — {elrrs['XXgradeXX']}&quot;)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -237,7 +237,7 @@
  
      # Step 5: ELRRs
      elrrs = compute_elrrs(report_verdicts)
--    print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}")
-+    print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['XXgradeXX']}")
+-    print(f&quot;⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}&quot;)
++    print(f&quot;⭐ ELRRs: {elrrs['score']} — {elrrs['XXgradeXX']}&quot;)
  
      # Step 6: Format output
      active_conditions = []
-</pre><h3>Mutant 252</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="252">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #252</span>
+    <span class="mutant-summary"><span class="del">- print(f&quot;⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}&quot;)</span>  <span class="add">+ print(f&quot;XX⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}XX&quot;)</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -237,7 +237,7 @@
  
      # Step 5: ELRRs
      elrrs = compute_elrrs(report_verdicts)
--    print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}")
-+    print(f"XX⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}XX")
+-    print(f&quot;⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}&quot;)
++    print(f&quot;XX⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}XX&quot;)
  
      # Step 6: Format output
      active_conditions = []
-</pre><h3>Mutant 253</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="253">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #253</span>
+    <span class="mutant-summary"><span class="del">- active_conditions = []</span>  <span class="add">+ active_conditions = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -240,7 +240,7 @@
-     print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}")
+     print(f&quot;⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}&quot;)
  
      # Step 6: Format output
 -    active_conditions = []
@@ -1654,7 +3491,17 @@
      not_mentioned     = []
  
      for cond in CONDITIONS:
-</pre><h3>Mutant 254</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="254">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #254</span>
+    <span class="mutant-summary"><span class="del">- not_mentioned     = []</span>  <span class="add">+ not_mentioned     = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -241,7 +241,7 @@
  
@@ -1665,7 +3512,17 @@
  
      for cond in CONDITIONS:
          v = report_verdicts[cond]
-</pre><h3>Mutant 255</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="255">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #255</span>
+    <span class="mutant-summary"><span class="del">- v = report_verdicts[cond]</span>  <span class="add">+ v = None</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -244,7 +244,7 @@
      not_mentioned     = []
@@ -1676,7 +3533,17 @@
          if v['verdict'] != 'NOT_MENTIONED':
              active_conditions.append({
                  'name':        cond,
-</pre><h3>Mutant 256</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="256">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #256</span>
+    <span class="mutant-summary"><span class="del">- if v['verdict'] != 'NOT_MENTIONED':</span>  <span class="add">+ if v['XXverdictXX'] != 'NOT_MENTIONED':</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -245,7 +245,7 @@
  
@@ -1687,7 +3554,17 @@
              active_conditions.append({
                  'name':        cond,
                  'verdict':     v['verdict'],
-</pre><h3>Mutant 257</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="257">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #257</span>
+    <span class="mutant-summary"><span class="del">- if v['verdict'] != 'NOT_MENTIONED':</span>  <span class="add">+ if v['verdict'] == 'NOT_MENTIONED':</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -245,7 +245,7 @@
  
@@ -1698,7 +3575,17 @@
              active_conditions.append({
                  'name':        cond,
                  'verdict':     v['verdict'],
-</pre><h3>Mutant 258</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="258">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #258</span>
+    <span class="mutant-summary"><span class="del">- if v['verdict'] != 'NOT_MENTIONED':</span>  <span class="add">+ if v['verdict'] != 'XXNOT_MENTIONEDXX':</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -245,7 +245,7 @@
  
@@ -1709,7 +3596,17 @@
              active_conditions.append({
                  'name':        cond,
                  'verdict':     v['verdict'],
-</pre><h3>Mutant 259</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="259">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #259</span>
+    <span class="mutant-summary"><span class="del">- 'name':        cond,</span>  <span class="add">+ 'XXnameXX':        cond,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -247,7 +247,7 @@
          v = report_verdicts[cond]
@@ -1720,7 +3617,17 @@
                  'verdict':     v['verdict'],
                  'confidence':  round(v['confidence'], 4),
                  'meaning':     v['meaning'],
-</pre><h3>Mutant 260</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="260">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #260</span>
+    <span class="mutant-summary"><span class="del">- 'verdict':     v['verdict'],</span>  <span class="add">+ 'XXverdictXX':     v['verdict'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -248,7 +248,7 @@
          if v['verdict'] != 'NOT_MENTIONED':
@@ -1731,7 +3638,17 @@
                  'confidence':  round(v['confidence'], 4),
                  'meaning':     v['meaning'],
                  'source':      v['source'],
-</pre><h3>Mutant 261</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="261">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #261</span>
+    <span class="mutant-summary"><span class="del">- 'verdict':     v['verdict'],</span>  <span class="add">+ 'verdict':     v['XXverdictXX'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -248,7 +248,7 @@
          if v['verdict'] != 'NOT_MENTIONED':
@@ -1742,7 +3659,17 @@
                  'confidence':  round(v['confidence'], 4),
                  'meaning':     v['meaning'],
                  'source':      v['source'],
-</pre><h3>Mutant 262</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="262">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #262</span>
+    <span class="mutant-summary"><span class="del">- 'confidence':  round(v['confidence'], 4),</span>  <span class="add">+ 'XXconfidenceXX':  round(v['confidence'], 4),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -249,7 +249,7 @@
              active_conditions.append({
@@ -1753,7 +3680,17 @@
                  'meaning':     v['meaning'],
                  'source':      v['source'],
                  'source_text': v['source_text'],
-</pre><h3>Mutant 263</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="263">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #263</span>
+    <span class="mutant-summary"><span class="del">- 'confidence':  round(v['confidence'], 4),</span>  <span class="add">+ 'confidence':  round(v['XXconfidenceXX'], 4),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -249,7 +249,7 @@
              active_conditions.append({
@@ -1764,7 +3701,17 @@
                  'meaning':     v['meaning'],
                  'source':      v['source'],
                  'source_text': v['source_text'],
-</pre><h3>Mutant 264</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="264">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #264</span>
+    <span class="mutant-summary"><span class="del">- 'confidence':  round(v['confidence'], 4),</span>  <span class="add">+ 'confidence':  round(v['confidence'], 5),</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -249,7 +249,7 @@
              active_conditions.append({
@@ -1775,7 +3722,17 @@
                  'meaning':     v['meaning'],
                  'source':      v['source'],
                  'source_text': v['source_text'],
-</pre><h3>Mutant 265</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="265">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #265</span>
+    <span class="mutant-summary"><span class="del">- 'meaning':     v['meaning'],</span>  <span class="add">+ 'XXmeaningXX':     v['meaning'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -250,7 +250,7 @@
                  'name':        cond,
@@ -1786,7 +3743,17 @@
                  'source':      v['source'],
                  'source_text': v['source_text'],
                  'mentioned':   v['mentioned'],
-</pre><h3>Mutant 266</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="266">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #266</span>
+    <span class="mutant-summary"><span class="del">- 'meaning':     v['meaning'],</span>  <span class="add">+ 'meaning':     v['XXmeaningXX'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -250,7 +250,7 @@
                  'name':        cond,
@@ -1797,7 +3764,17 @@
                  'source':      v['source'],
                  'source_text': v['source_text'],
                  'mentioned':   v['mentioned'],
-</pre><h3>Mutant 267</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="267">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #267</span>
+    <span class="mutant-summary"><span class="del">- 'source':      v['source'],</span>  <span class="add">+ 'XXsourceXX':      v['source'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -251,7 +251,7 @@
                  'verdict':     v['verdict'],
@@ -1808,7 +3785,17 @@
                  'source_text': v['source_text'],
                  'mentioned':   v['mentioned'],
                  'xray_present': v['t2_present'],
-</pre><h3>Mutant 268</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="268">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #268</span>
+    <span class="mutant-summary"><span class="del">- 'source':      v['source'],</span>  <span class="add">+ 'source':      v['XXsourceXX'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -251,7 +251,7 @@
                  'verdict':     v['verdict'],
@@ -1819,7 +3806,17 @@
                  'source_text': v['source_text'],
                  'mentioned':   v['mentioned'],
                  'xray_present': v['t2_present'],
-</pre><h3>Mutant 269</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="269">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #269</span>
+    <span class="mutant-summary"><span class="del">- 'source_text': v['source_text'],</span>  <span class="add">+ 'XXsource_textXX': v['source_text'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -252,7 +252,7 @@
                  'confidence':  round(v['confidence'], 4),
@@ -1830,7 +3827,17 @@
                  'mentioned':   v['mentioned'],
                  'xray_present': v['t2_present'],
              })
-</pre><h3>Mutant 270</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="270">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #270</span>
+    <span class="mutant-summary"><span class="del">- 'source_text': v['source_text'],</span>  <span class="add">+ 'source_text': v['XXsource_textXX'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -252,7 +252,7 @@
                  'confidence':  round(v['confidence'], 4),
@@ -1841,7 +3848,17 @@
                  'mentioned':   v['mentioned'],
                  'xray_present': v['t2_present'],
              })
-</pre><h3>Mutant 271</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="271">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #271</span>
+    <span class="mutant-summary"><span class="del">- 'mentioned':   v['mentioned'],</span>  <span class="add">+ 'XXmentionedXX':   v['mentioned'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -253,7 +253,7 @@
                  'meaning':     v['meaning'],
@@ -1852,7 +3869,17 @@
                  'xray_present': v['t2_present'],
              })
          else:
-</pre><h3>Mutant 272</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="272">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #272</span>
+    <span class="mutant-summary"><span class="del">- 'mentioned':   v['mentioned'],</span>  <span class="add">+ 'mentioned':   v['XXmentionedXX'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -253,7 +253,7 @@
                  'meaning':     v['meaning'],
@@ -1863,7 +3890,17 @@
                  'xray_present': v['t2_present'],
              })
          else:
-</pre><h3>Mutant 273</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="273">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #273</span>
+    <span class="mutant-summary"><span class="del">- 'xray_present': v['t2_present'],</span>  <span class="add">+ 'XXxray_presentXX': v['t2_present'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -254,7 +254,7 @@
                  'source':      v['source'],
@@ -1874,7 +3911,17 @@
              })
          else:
              not_mentioned.append(cond)
-</pre><h3>Mutant 274</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="274">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #274</span>
+    <span class="mutant-summary"><span class="del">- 'xray_present': v['t2_present'],</span>  <span class="add">+ 'xray_present': v['XXt2_presentXX'],</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -254,7 +254,7 @@
                  'source':      v['source'],
@@ -1885,7 +3932,17 @@
              })
          else:
              not_mentioned.append(cond)
-</pre><h3>Mutant 275</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="275">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #275</span>
+    <span class="mutant-summary"><span class="del">- 'elrrs':            elrrs,</span>  <span class="add">+ 'XXelrrsXX':            elrrs,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -260,7 +260,7 @@
              not_mentioned.append(cond)
@@ -1896,7 +3953,17 @@
          'conditions':       active_conditions,
          'not_mentioned':    not_mentioned,
          'all_attn':         all_attn,
-</pre><h3>Mutant 276</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="276">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #276</span>
+    <span class="mutant-summary"><span class="del">- 'conditions':       active_conditions,</span>  <span class="add">+ 'XXconditionsXX':       active_conditions,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -261,7 +261,7 @@
  
@@ -1907,7 +3974,17 @@
          'not_mentioned':    not_mentioned,
          'all_attn':         all_attn,
          'sentences':        sentences,
-</pre><h3>Mutant 277</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="277">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #277</span>
+    <span class="mutant-summary"><span class="del">- 'not_mentioned':    not_mentioned,</span>  <span class="add">+ 'XXnot_mentionedXX':    not_mentioned,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -262,7 +262,7 @@
      return {
@@ -1918,7 +3995,17 @@
          'all_attn':         all_attn,
          'sentences':        sentences,
          'all_chexbert':     all_chexbert,
-</pre><h3>Mutant 278</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="278">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #278</span>
+    <span class="mutant-summary"><span class="del">- 'all_attn':         all_attn,</span>  <span class="add">+ 'XXall_attnXX':         all_attn,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -263,7 +263,7 @@
          'elrrs':            elrrs,
@@ -1929,7 +4016,17 @@
          'sentences':        sentences,
          'all_chexbert':     all_chexbert,
      }
-</pre><h3>Mutant 279</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="279">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #279</span>
+    <span class="mutant-summary"><span class="del">- 'sentences':        sentences,</span>  <span class="add">+ 'XXsentencesXX':        sentences,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -264,7 +264,7 @@
          'conditions':       active_conditions,
@@ -1940,7 +4037,17 @@
          'all_chexbert':     all_chexbert,
      }
  
-</pre><h3>Mutant 280</h3><pre>--- inference/pipeline.py
+</pre>
+  </div>
+</div>
+<div class="mutant-card" data-num="280">
+  <div class="mutant-header">
+    <span class="mutant-num">Mutant #280</span>
+    <span class="mutant-summary"><span class="del">- 'all_chexbert':     all_chexbert,</span>  <span class="add">+ 'XXall_chexbertXX':     all_chexbert,</span></span>
+    <span class="chevron">&#9654;</span>
+  </div>
+  <div class="diff-wrap">
+    <pre class="raw-diff" style="display:none">--- inference/pipeline.py
 +++ inference/pipeline.py
 @@ -265,6 +265,6 @@
          'not_mentioned':    not_mentioned,
@@ -1950,4 +4057,86 @@
 +        'XXall_chexbertXX':     all_chexbert,
      }
  
-</pre></body></html>
+</pre>
+  </div>
+</div>
+  </div>
+
+</div>
+<div id="back-top" title="Back to top">↑</div>
+<script>
+// diff rendering
+function renderDiff(raw) {
+  const lines = raw.split('\n');
+  let html = '<table class="diff-table"><tbody>';
+  let lineNo = 0;
+  lines.forEach(line => {
+    if (!line && lineNo === 0) return;
+    let cls = 'diff-line-ctx';
+    let glyph = '\u00a0';
+    if (line.startsWith('@@')) { cls = 'diff-line-hunk'; glyph = ''; }
+    else if (line.startsWith('---') || line.startsWith('+++')) { cls = 'diff-line-hunk'; glyph = ''; }
+    else if (line.startsWith('-')) { cls = 'diff-line-del'; glyph = '-'; lineNo++; }
+    else if (line.startsWith('+')) { cls = 'diff-line-add'; glyph = '+'; }
+    else { lineNo++; }
+    const lnCell = (glyph === '-' || cls === 'diff-line-ctx')
+      ? `<td class="ln">${lineNo}</td>`
+      : `<td class="ln">${glyph}</td>`;
+    const escaped = line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    html += `<tr class="${cls}">${lnCell}<td class="code">${escaped}</td></tr>`;
+  });
+  return html + '</tbody></table>';
+}
+
+// collapsible cards
+document.addEventListener('DOMContentLoaded', () => {
+  // render all diffs
+  document.querySelectorAll('.raw-diff').forEach(el => {
+    const wrap = el.closest('.diff-wrap');
+    if (wrap) wrap.innerHTML = renderDiff(el.textContent);
+  });
+
+  // toggle
+  document.querySelectorAll('.mutant-header').forEach(hdr => {
+    hdr.addEventListener('click', () => {
+      hdr.closest('.mutant-card').classList.toggle('open');
+    });
+  });
+
+  // search / filter
+  const search = document.getElementById('search');
+  const cards  = Array.from(document.querySelectorAll('.mutant-card'));
+  const countLbl = document.getElementById('count-label');
+  const updateCount = () => {
+    const vis = cards.filter(c => c.style.display !== 'none').length;
+    if (countLbl) countLbl.textContent = `${vis} of ${cards.length} mutants`;
+  };
+  if (search) {
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase();
+      cards.forEach(c => {
+        const text = c.textContent.toLowerCase();
+        c.style.display = (!q || text.includes(q)) ? '' : 'none';
+      });
+      updateCount();
+    });
+  }
+  updateCount();
+
+  // expand / collapse all
+  document.getElementById('expand-all')?.addEventListener('click', () =>
+    cards.forEach(c => c.classList.add('open')));
+  document.getElementById('collapse-all')?.addEventListener('click', () =>
+    cards.forEach(c => c.classList.remove('open')));
+
+  // back-to-top
+  const fab = document.getElementById('back-top');
+  if (fab) {
+    window.addEventListener('scroll', () =>
+      fab.classList.toggle('visible', window.scrollY > 400));
+    fab.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+  }
+});
+</script>
+</body>
+</html>
