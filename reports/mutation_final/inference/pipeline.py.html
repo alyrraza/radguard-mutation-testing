@@ -1,0 +1,1953 @@
+<html><body><h1>inference/pipeline.py</h1>Killed 104 out of 280 mutants<h2>Survived</h2>Survived mutation testing. These mutants show holes in your test suite.<h3>Mutant 1</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -18,7 +18,7 @@
+ from PIL import Image
+ from nltk.tokenize import sent_tokenize
+ import nltk
+-nltk.download('punkt', quiet=True)
++nltk.download('XXpunktXX', quiet=True)
+ nltk.download('punkt_tab', quiet=True)
+ 
+ from .chexbert_runner import run_chexbert, chexbert_to_tensor
+</pre><h3>Mutant 2</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -18,7 +18,7 @@
+ from PIL import Image
+ from nltk.tokenize import sent_tokenize
+ import nltk
+-nltk.download('punkt', quiet=True)
++nltk.download('punkt', quiet=False)
+ nltk.download('punkt_tab', quiet=True)
+ 
+ from .chexbert_runner import run_chexbert, chexbert_to_tensor
+</pre><h3>Mutant 3</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -19,7 +19,7 @@
+ from nltk.tokenize import sent_tokenize
+ import nltk
+ nltk.download('punkt', quiet=True)
+-nltk.download('punkt_tab', quiet=True)
++nltk.download('XXpunkt_tabXX', quiet=True)
+ 
+ from .chexbert_runner import run_chexbert, chexbert_to_tensor
+ from .model import run_inference_on_sentence, CONDITIONS
+</pre><h3>Mutant 4</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -19,7 +19,7 @@
+ from nltk.tokenize import sent_tokenize
+ import nltk
+ nltk.download('punkt', quiet=True)
+-nltk.download('punkt_tab', quiet=True)
++nltk.download('punkt_tab', quiet=False)
+ 
+ from .chexbert_runner import run_chexbert, chexbert_to_tensor
+ from .model import run_inference_on_sentence, CONDITIONS
+</pre><h3>Mutant 7</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -30,7 +30,7 @@
+ # Hallucination > Missing > Inaccurate
+ ELRRS_WEIGHTS = {
+     'SUPPORTED':     1.0,
+-    'NOT_MENTIONED': 0.0,
++    'XXNOT_MENTIONEDXX': 0.0,
+     'INACCURATE':   -0.3,
+     'MISSING':      -0.5,
+     'HALLUCINATED': -0.7,
+</pre><h3>Mutant 8</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -30,7 +30,7 @@
+ # Hallucination > Missing > Inaccurate
+ ELRRS_WEIGHTS = {
+     'SUPPORTED':     1.0,
+-    'NOT_MENTIONED': 0.0,
++    'NOT_MENTIONED': 1.0,
+     'INACCURATE':   -0.3,
+     'MISSING':      -0.5,
+     'HALLUCINATED': -0.7,
+</pre><h3>Mutant 21</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -36,7 +36,7 @@
+     'HALLUCINATED': -0.7,
+ }
+ ELRRS_GRADES = [
+-    (80, 'Excellent', '#4CAF50', 'Clinically safe — minimal errors'),
++    (80, 'Excellent', 'XX#4CAF50XX', 'Clinically safe — minimal errors'),
+     (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
+     (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
+     (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
+</pre><h3>Mutant 22</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -36,7 +36,7 @@
+     'HALLUCINATED': -0.7,
+ }
+ ELRRS_GRADES = [
+-    (80, 'Excellent', '#4CAF50', 'Clinically safe — minimal errors'),
++    (80, 'Excellent', '#4CAF50', 'XXClinically safe — minimal errorsXX'),
+     (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
+     (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
+     (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
+</pre><h3>Mutant 25</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -37,7 +37,7 @@
+ }
+ ELRRS_GRADES = [
+     (80, 'Excellent', '#4CAF50', 'Clinically safe — minimal errors'),
+-    (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
++    (60, 'Good',      'XX#8BC34AXX', 'Minor errors — clinically acceptable'),
+     (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
+     (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
+     (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
+</pre><h3>Mutant 26</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -37,7 +37,7 @@
+ }
+ ELRRS_GRADES = [
+     (80, 'Excellent', '#4CAF50', 'Clinically safe — minimal errors'),
+-    (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
++    (60, 'Good',      '#8BC34A', 'XXMinor errors — clinically acceptableXX'),
+     (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
+     (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
+     (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
+</pre><h3>Mutant 29</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -38,7 +38,7 @@
+ ELRRS_GRADES = [
+     (80, 'Excellent', '#4CAF50', 'Clinically safe — minimal errors'),
+     (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
+-    (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
++    (40, 'Fair',      'XX#FF9800XX', 'Moderate errors — review advised'),
+     (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
+     (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
+ ]
+</pre><h3>Mutant 30</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -38,7 +38,7 @@
+ ELRRS_GRADES = [
+     (80, 'Excellent', '#4CAF50', 'Clinically safe — minimal errors'),
+     (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
+-    (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
++    (40, 'Fair',      '#FF9800', 'XXModerate errors — review advisedXX'),
+     (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
+     (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
+ ]
+</pre><h3>Mutant 34</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -39,7 +39,7 @@
+     (80, 'Excellent', '#4CAF50', 'Clinically safe — minimal errors'),
+     (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
+     (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
+-    (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
++    (20, 'Poor',      '#F44336', 'XXSignificant errors — high riskXX'),
+     (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
+ ]
+ 
+</pre><h3>Mutant 35</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -40,7 +40,7 @@
+     (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
+     (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
+     (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
+-    (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
++    (1,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
+ ]
+ 
+ CHEXBERT_COLS = [
+</pre><h3>Mutant 37</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -40,7 +40,7 @@
+     (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
+     (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
+     (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
+-    (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
++    (0,  'Critical',  'XX#9C27B0XX', 'Severe errors — unsafe'),
+ ]
+ 
+ CHEXBERT_COLS = [
+</pre><h3>Mutant 38</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -40,7 +40,7 @@
+     (60, 'Good',      '#8BC34A', 'Minor errors — clinically acceptable'),
+     (40, 'Fair',      '#FF9800', 'Moderate errors — review advised'),
+     (20, 'Poor',      '#F44336', 'Significant errors — high risk'),
+-    (0,  'Critical',  '#9C27B0', 'Severe errors — unsafe'),
++    (0,  'Critical',  '#9C27B0', 'XXSevere errors — unsafeXX'),
+ ]
+ 
+ CHEXBERT_COLS = [
+</pre><h3>Mutant 40</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -44,7 +44,7 @@
+ ]
+ 
+ CHEXBERT_COLS = [
+-    'Enlarged Cardiomediastinum', 'Cardiomegaly',
++    'XXEnlarged CardiomediastinumXX', 'Cardiomegaly',
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+</pre><h3>Mutant 41</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -44,7 +44,7 @@
+ ]
+ 
+ CHEXBERT_COLS = [
+-    'Enlarged Cardiomediastinum', 'Cardiomegaly',
++    'Enlarged Cardiomediastinum', 'XXCardiomegalyXX',
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+</pre><h3>Mutant 42</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -45,7 +45,7 @@
+ 
+ CHEXBERT_COLS = [
+     'Enlarged Cardiomediastinum', 'Cardiomegaly',
+-    'Lung Opacity', 'Lung Lesion', 'Edema',
++    'XXLung OpacityXX', 'Lung Lesion', 'Edema',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+     'Fracture', 'Support Devices', 'No Finding'
+</pre><h3>Mutant 43</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -45,7 +45,7 @@
+ 
+ CHEXBERT_COLS = [
+     'Enlarged Cardiomediastinum', 'Cardiomegaly',
+-    'Lung Opacity', 'Lung Lesion', 'Edema',
++    'Lung Opacity', 'XXLung LesionXX', 'Edema',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+     'Fracture', 'Support Devices', 'No Finding'
+</pre><h3>Mutant 44</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -45,7 +45,7 @@
+ 
+ CHEXBERT_COLS = [
+     'Enlarged Cardiomediastinum', 'Cardiomegaly',
+-    'Lung Opacity', 'Lung Lesion', 'Edema',
++    'Lung Opacity', 'Lung Lesion', 'XXEdemaXX',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+     'Fracture', 'Support Devices', 'No Finding'
+</pre><h3>Mutant 45</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -46,7 +46,7 @@
+ CHEXBERT_COLS = [
+     'Enlarged Cardiomediastinum', 'Cardiomegaly',
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+-    'Consolidation', 'Pneumonia', 'Atelectasis',
++    'XXConsolidationXX', 'Pneumonia', 'Atelectasis',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+</pre><h3>Mutant 46</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -46,7 +46,7 @@
+ CHEXBERT_COLS = [
+     'Enlarged Cardiomediastinum', 'Cardiomegaly',
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+-    'Consolidation', 'Pneumonia', 'Atelectasis',
++    'Consolidation', 'XXPneumoniaXX', 'Atelectasis',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+</pre><h3>Mutant 47</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -46,7 +46,7 @@
+ CHEXBERT_COLS = [
+     'Enlarged Cardiomediastinum', 'Cardiomegaly',
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+-    'Consolidation', 'Pneumonia', 'Atelectasis',
++    'Consolidation', 'Pneumonia', 'XXAtelectasisXX',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+</pre><h3>Mutant 48</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -47,7 +47,7 @@
+     'Enlarged Cardiomediastinum', 'Cardiomegaly',
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+-    'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
++    'XXPneumothoraxXX', 'Pleural Effusion', 'Pleural Other',
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+ ERROR_PRIORITY = {
+</pre><h3>Mutant 49</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -47,7 +47,7 @@
+     'Enlarged Cardiomediastinum', 'Cardiomegaly',
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+-    'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
++    'Pneumothorax', 'XXPleural EffusionXX', 'Pleural Other',
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+ ERROR_PRIORITY = {
+</pre><h3>Mutant 50</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -47,7 +47,7 @@
+     'Enlarged Cardiomediastinum', 'Cardiomegaly',
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+-    'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
++    'Pneumothorax', 'Pleural Effusion', 'XXPleural OtherXX',
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+ ERROR_PRIORITY = {
+</pre><h3>Mutant 51</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -48,7 +48,7 @@
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+-    'Fracture', 'Support Devices', 'No Finding'
++    'XXFractureXX', 'Support Devices', 'No Finding'
+ ]
+ ERROR_PRIORITY = {
+     'HALLUCINATED': 3, 'INACCURATE': 2,
+</pre><h3>Mutant 52</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -48,7 +48,7 @@
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+-    'Fracture', 'Support Devices', 'No Finding'
++    'Fracture', 'XXSupport DevicesXX', 'No Finding'
+ ]
+ ERROR_PRIORITY = {
+     'HALLUCINATED': 3, 'INACCURATE': 2,
+</pre><h3>Mutant 53</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -48,7 +48,7 @@
+     'Lung Opacity', 'Lung Lesion', 'Edema',
+     'Consolidation', 'Pneumonia', 'Atelectasis',
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+-    'Fracture', 'Support Devices', 'No Finding'
++    'Fracture', 'Support Devices', 'XXNo FindingXX'
+ ]
+ ERROR_PRIORITY = {
+     'HALLUCINATED': 3, 'INACCURATE': 2,
+</pre><h3>Mutant 55</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -51,7 +51,7 @@
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+ ERROR_PRIORITY = {
+-    'HALLUCINATED': 3, 'INACCURATE': 2,
++    'XXHALLUCINATEDXX': 3, 'INACCURATE': 2,
+     'MISSING': 1, 'SUPPORTED': 0
+ }
+ ERROR_MEANING = {
+</pre><h3>Mutant 56</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -51,7 +51,7 @@
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+ ERROR_PRIORITY = {
+-    'HALLUCINATED': 3, 'INACCURATE': 2,
++    'HALLUCINATED': 4, 'INACCURATE': 2,
+     'MISSING': 1, 'SUPPORTED': 0
+ }
+ ERROR_MEANING = {
+</pre><h3>Mutant 57</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -51,7 +51,7 @@
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+ ERROR_PRIORITY = {
+-    'HALLUCINATED': 3, 'INACCURATE': 2,
++    'HALLUCINATED': 3, 'XXINACCURATEXX': 2,
+     'MISSING': 1, 'SUPPORTED': 0
+ }
+ ERROR_MEANING = {
+</pre><h3>Mutant 58</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -51,7 +51,7 @@
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+ ERROR_PRIORITY = {
+-    'HALLUCINATED': 3, 'INACCURATE': 2,
++    'HALLUCINATED': 3, 'INACCURATE': 3,
+     'MISSING': 1, 'SUPPORTED': 0
+ }
+ ERROR_MEANING = {
+</pre><h3>Mutant 59</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -52,7 +52,7 @@
+ ]
+ ERROR_PRIORITY = {
+     'HALLUCINATED': 3, 'INACCURATE': 2,
+-    'MISSING': 1, 'SUPPORTED': 0
++    'XXMISSINGXX': 1, 'SUPPORTED': 0
+ }
+ ERROR_MEANING = {
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+</pre><h3>Mutant 60</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -52,7 +52,7 @@
+ ]
+ ERROR_PRIORITY = {
+     'HALLUCINATED': 3, 'INACCURATE': 2,
+-    'MISSING': 1, 'SUPPORTED': 0
++    'MISSING': 2, 'SUPPORTED': 0
+ }
+ ERROR_MEANING = {
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+</pre><h3>Mutant 61</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -52,7 +52,7 @@
+ ]
+ ERROR_PRIORITY = {
+     'HALLUCINATED': 3, 'INACCURATE': 2,
+-    'MISSING': 1, 'SUPPORTED': 0
++    'MISSING': 1, 'XXSUPPORTEDXX': 0
+ }
+ ERROR_MEANING = {
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+</pre><h3>Mutant 62</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -52,7 +52,7 @@
+ ]
+ ERROR_PRIORITY = {
+     'HALLUCINATED': 3, 'INACCURATE': 2,
+-    'MISSING': 1, 'SUPPORTED': 0
++    'MISSING': 1, 'SUPPORTED': 1
+ }
+ ERROR_MEANING = {
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+</pre><h3>Mutant 63</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -50,10 +50,7 @@
+     'Pneumothorax', 'Pleural Effusion', 'Pleural Other',
+     'Fracture', 'Support Devices', 'No Finding'
+ ]
+-ERROR_PRIORITY = {
+-    'HALLUCINATED': 3, 'INACCURATE': 2,
+-    'MISSING': 1, 'SUPPORTED': 0
+-}
++ERROR_PRIORITY = None
+ ERROR_MEANING = {
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+     'HALLUCINATED':  'AI made this up — not visible on X-ray',
+</pre><h3>Mutant 64</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -55,7 +55,7 @@
+     'MISSING': 1, 'SUPPORTED': 0
+ }
+ ERROR_MEANING = {
+-    'SUPPORTED':     'AI report is correct — X-ray confirms it',
++    'XXSUPPORTEDXX':     'AI report is correct — X-ray confirms it',
+     'HALLUCINATED':  'AI made this up — not visible on X-ray',
+     'MISSING':       'AI forgot this — it IS visible on X-ray',
+     'INACCURATE':    'AI mentioned it but described it wrongly',
+</pre><h3>Mutant 65</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -55,7 +55,7 @@
+     'MISSING': 1, 'SUPPORTED': 0
+ }
+ ERROR_MEANING = {
+-    'SUPPORTED':     'AI report is correct — X-ray confirms it',
++    'SUPPORTED':     'XXAI report is correct — X-ray confirms itXX',
+     'HALLUCINATED':  'AI made this up — not visible on X-ray',
+     'MISSING':       'AI forgot this — it IS visible on X-ray',
+     'INACCURATE':    'AI mentioned it but described it wrongly',
+</pre><h3>Mutant 66</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -56,7 +56,7 @@
+ }
+ ERROR_MEANING = {
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+-    'HALLUCINATED':  'AI made this up — not visible on X-ray',
++    'XXHALLUCINATEDXX':  'AI made this up — not visible on X-ray',
+     'MISSING':       'AI forgot this — it IS visible on X-ray',
+     'INACCURATE':    'AI mentioned it but described it wrongly',
+     'NOT_MENTIONED': 'Condition not present — AI correctly silent',
+</pre><h3>Mutant 67</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -56,7 +56,7 @@
+ }
+ ERROR_MEANING = {
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+-    'HALLUCINATED':  'AI made this up — not visible on X-ray',
++    'HALLUCINATED':  'XXAI made this up — not visible on X-rayXX',
+     'MISSING':       'AI forgot this — it IS visible on X-ray',
+     'INACCURATE':    'AI mentioned it but described it wrongly',
+     'NOT_MENTIONED': 'Condition not present — AI correctly silent',
+</pre><h3>Mutant 68</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -57,7 +57,7 @@
+ ERROR_MEANING = {
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+     'HALLUCINATED':  'AI made this up — not visible on X-ray',
+-    'MISSING':       'AI forgot this — it IS visible on X-ray',
++    'XXMISSINGXX':       'AI forgot this — it IS visible on X-ray',
+     'INACCURATE':    'AI mentioned it but described it wrongly',
+     'NOT_MENTIONED': 'Condition not present — AI correctly silent',
+ }
+</pre><h3>Mutant 69</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -57,7 +57,7 @@
+ ERROR_MEANING = {
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+     'HALLUCINATED':  'AI made this up — not visible on X-ray',
+-    'MISSING':       'AI forgot this — it IS visible on X-ray',
++    'MISSING':       'XXAI forgot this — it IS visible on X-rayXX',
+     'INACCURATE':    'AI mentioned it but described it wrongly',
+     'NOT_MENTIONED': 'Condition not present — AI correctly silent',
+ }
+</pre><h3>Mutant 70</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -58,7 +58,7 @@
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+     'HALLUCINATED':  'AI made this up — not visible on X-ray',
+     'MISSING':       'AI forgot this — it IS visible on X-ray',
+-    'INACCURATE':    'AI mentioned it but described it wrongly',
++    'XXINACCURATEXX':    'AI mentioned it but described it wrongly',
+     'NOT_MENTIONED': 'Condition not present — AI correctly silent',
+ }
+ 
+</pre><h3>Mutant 71</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -58,7 +58,7 @@
+     'SUPPORTED':     'AI report is correct — X-ray confirms it',
+     'HALLUCINATED':  'AI made this up — not visible on X-ray',
+     'MISSING':       'AI forgot this — it IS visible on X-ray',
+-    'INACCURATE':    'AI mentioned it but described it wrongly',
++    'INACCURATE':    'XXAI mentioned it but described it wronglyXX',
+     'NOT_MENTIONED': 'Condition not present — AI correctly silent',
+ }
+ 
+</pre><h3>Mutant 72</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -59,7 +59,7 @@
+     'HALLUCINATED':  'AI made this up — not visible on X-ray',
+     'MISSING':       'AI forgot this — it IS visible on X-ray',
+     'INACCURATE':    'AI mentioned it but described it wrongly',
+-    'NOT_MENTIONED': 'Condition not present — AI correctly silent',
++    'XXNOT_MENTIONEDXX': 'Condition not present — AI correctly silent',
+ }
+ 
+ 
+</pre><h3>Mutant 73</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -59,7 +59,7 @@
+     'HALLUCINATED':  'AI made this up — not visible on X-ray',
+     'MISSING':       'AI forgot this — it IS visible on X-ray',
+     'INACCURATE':    'AI mentioned it but described it wrongly',
+-    'NOT_MENTIONED': 'Condition not present — AI correctly silent',
++    'NOT_MENTIONED': 'XXCondition not present — AI correctly silentXX',
+ }
+ 
+ 
+</pre><h3>Mutant 80</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -80,7 +80,7 @@
+     mentioned_in = {cond: [] for cond in CONDITIONS}
+ 
+     for si, chex_labels in enumerate(all_chexbert_labels):
+-        found = False
++        found = True
+         for cond, chex_col in zip(CONDITIONS, CHEXBERT_COLS):
+             v = chex_labels.get(chex_col, float('nan'))
+             try:
+</pre><h3>Mutant 81</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -80,7 +80,7 @@
+     mentioned_in = {cond: [] for cond in CONDITIONS}
+ 
+     for si, chex_labels in enumerate(all_chexbert_labels):
+-        found = False
++        found = None
+         for cond, chex_col in zip(CONDITIONS, CHEXBERT_COLS):
+             v = chex_labels.get(chex_col, float('nan'))
+             try:
+</pre><h3>Mutant 83</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -82,7 +82,7 @@
+     for si, chex_labels in enumerate(all_chexbert_labels):
+         found = False
+         for cond, chex_col in zip(CONDITIONS, CHEXBERT_COLS):
+-            v = chex_labels.get(chex_col, float('nan'))
++            v = None
+             try:
+                 fv = float(v)
+                 if not math.isnan(fv):
+</pre><h3>Mutant 84</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -84,7 +84,7 @@
+         for cond, chex_col in zip(CONDITIONS, CHEXBERT_COLS):
+             v = chex_labels.get(chex_col, float('nan'))
+             try:
+-                fv = float(v)
++                fv = None
+                 if not math.isnan(fv):
+                     mentioned_in[cond].append(si)
+                     found = True
+</pre><h3>Mutant 86</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -87,7 +87,7 @@
+                 fv = float(v)
+                 if not math.isnan(fv):
+                     mentioned_in[cond].append(si)
+-                    found = True
++                    found = False
+             except:
+                 pass
+ 
+</pre><h3>Mutant 87</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -87,7 +87,7 @@
+                 fv = float(v)
+                 if not math.isnan(fv):
+                     mentioned_in[cond].append(si)
+-                    found = True
++                    found = None
+             except:
+                 pass
+ 
+</pre><h3>Mutant 89</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -94,7 +94,7 @@
+     report_verdicts = {}
+     for cond in CONDITIONS:
+         if mentioned_in[cond]:
+-            best_pred, best_conf, best_si = None, -1.0, -1
++            best_pred, best_conf, best_si = None, +1.0, -1
+             for si in mentioned_in[cond]:
+                 pred = all_sentence_preds[si][cond]['prediction']
+                 conf = all_sentence_preds[si][cond]['confidence']
+</pre><h3>Mutant 90</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -94,7 +94,7 @@
+     report_verdicts = {}
+     for cond in CONDITIONS:
+         if mentioned_in[cond]:
+-            best_pred, best_conf, best_si = None, -1.0, -1
++            best_pred, best_conf, best_si = None, -2.0, -1
+             for si in mentioned_in[cond]:
+                 pred = all_sentence_preds[si][cond]['prediction']
+                 conf = all_sentence_preds[si][cond]['confidence']
+</pre><h3>Mutant 91</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -94,7 +94,7 @@
+     report_verdicts = {}
+     for cond in CONDITIONS:
+         if mentioned_in[cond]:
+-            best_pred, best_conf, best_si = None, -1.0, -1
++            best_pred, best_conf, best_si = None, -1.0, +1
+             for si in mentioned_in[cond]:
+                 pred = all_sentence_preds[si][cond]['prediction']
+                 conf = all_sentence_preds[si][cond]['confidence']
+</pre><h3>Mutant 92</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -94,7 +94,7 @@
+     report_verdicts = {}
+     for cond in CONDITIONS:
+         if mentioned_in[cond]:
+-            best_pred, best_conf, best_si = None, -1.0, -1
++            best_pred, best_conf, best_si = None, -1.0, -2
+             for si in mentioned_in[cond]:
+                 pred = all_sentence_preds[si][cond]['prediction']
+                 conf = all_sentence_preds[si][cond]['confidence']
+</pre><h3>Mutant 93</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -94,7 +94,7 @@
+     report_verdicts = {}
+     for cond in CONDITIONS:
+         if mentioned_in[cond]:
+-            best_pred, best_conf, best_si = None, -1.0, -1
++            best_pred, best_conf, best_si = None
+             for si in mentioned_in[cond]:
+                 pred = all_sentence_preds[si][cond]['prediction']
+                 conf = all_sentence_preds[si][cond]['confidence']
+</pre><h3>Mutant 94</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -96,7 +96,7 @@
+         if mentioned_in[cond]:
+             best_pred, best_conf, best_si = None, -1.0, -1
+             for si in mentioned_in[cond]:
+-                pred = all_sentence_preds[si][cond]['prediction']
++                pred = all_sentence_preds[si][cond]['XXpredictionXX']
+                 conf = all_sentence_preds[si][cond]['confidence']
+                 if (best_pred is None or
+                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+</pre><h3>Mutant 95</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -96,7 +96,7 @@
+         if mentioned_in[cond]:
+             best_pred, best_conf, best_si = None, -1.0, -1
+             for si in mentioned_in[cond]:
+-                pred = all_sentence_preds[si][cond]['prediction']
++                pred = None
+                 conf = all_sentence_preds[si][cond]['confidence']
+                 if (best_pred is None or
+                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+</pre><h3>Mutant 96</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -97,7 +97,7 @@
+             best_pred, best_conf, best_si = None, -1.0, -1
+             for si in mentioned_in[cond]:
+                 pred = all_sentence_preds[si][cond]['prediction']
+-                conf = all_sentence_preds[si][cond]['confidence']
++                conf = all_sentence_preds[si][cond]['XXconfidenceXX']
+                 if (best_pred is None or
+                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
+</pre><h3>Mutant 97</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -97,7 +97,7 @@
+             best_pred, best_conf, best_si = None, -1.0, -1
+             for si in mentioned_in[cond]:
+                 pred = all_sentence_preds[si][cond]['prediction']
+-                conf = all_sentence_preds[si][cond]['confidence']
++                conf = None
+                 if (best_pred is None or
+                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
+</pre><h3>Mutant 98</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -98,7 +98,7 @@
+             for si in mentioned_in[cond]:
+                 pred = all_sentence_preds[si][cond]['prediction']
+                 conf = all_sentence_preds[si][cond]['confidence']
+-                if (best_pred is None or
++                if (best_pred is not None or
+                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
+                          and conf > best_conf)):
+</pre><h3>Mutant 99</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -99,7 +99,7 @@
+                 pred = all_sentence_preds[si][cond]['prediction']
+                 conf = all_sentence_preds[si][cond]['confidence']
+                 if (best_pred is None or
+-                        ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
++                        ERROR_PRIORITY[pred] >= ERROR_PRIORITY[best_pred] or
+                         (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
+                          and conf > best_conf)):
+                     best_pred, best_conf, best_si = pred, conf, si
+</pre><h3>Mutant 100</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -100,7 +100,7 @@
+                 conf = all_sentence_preds[si][cond]['confidence']
+                 if (best_pred is None or
+                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+-                        (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
++                        (ERROR_PRIORITY[pred] != ERROR_PRIORITY[best_pred]
+                          and conf > best_conf)):
+                     best_pred, best_conf, best_si = pred, conf, si
+ 
+</pre><h3>Mutant 101</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -101,7 +101,7 @@
+                 if (best_pred is None or
+                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
+-                         and conf > best_conf)):
++                         and conf >= best_conf)):
+                     best_pred, best_conf, best_si = pred, conf, si
+ 
+             report_verdicts[cond] = {
+</pre><h3>Mutant 102</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -100,8 +100,7 @@
+                 conf = all_sentence_preds[si][cond]['confidence']
+                 if (best_pred is None or
+                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+-                        (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
+-                         and conf > best_conf)):
++                        (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred] or conf > best_conf)):
+                     best_pred, best_conf, best_si = pred, conf, si
+ 
+             report_verdicts[cond] = {
+</pre><h3>Mutant 103</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -98,7 +98,7 @@
+             for si in mentioned_in[cond]:
+                 pred = all_sentence_preds[si][cond]['prediction']
+                 conf = all_sentence_preds[si][cond]['confidence']
+-                if (best_pred is None or
++                if (best_pred is None and
+                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
+                          and conf > best_conf)):
+</pre><h3>Mutant 104</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -102,7 +102,7 @@
+                         ERROR_PRIORITY[pred] > ERROR_PRIORITY[best_pred] or
+                         (ERROR_PRIORITY[pred] == ERROR_PRIORITY[best_pred]
+                          and conf > best_conf)):
+-                    best_pred, best_conf, best_si = pred, conf, si
++                    best_pred, best_conf, best_si = None
+ 
+             report_verdicts[cond] = {
+                 'verdict':     best_pred,
+</pre><h3>Mutant 105</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -105,7 +105,7 @@
+                     best_pred, best_conf, best_si = pred, conf, si
+ 
+             report_verdicts[cond] = {
+-                'verdict':     best_pred,
++                'XXverdictXX':     best_pred,
+                 'confidence':  best_conf,
+                 'source':      f"Sentence {best_si + 1}",
+                 'source_text': sentences[best_si],
+</pre><h3>Mutant 106</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -106,7 +106,7 @@
+ 
+             report_verdicts[cond] = {
+                 'verdict':     best_pred,
+-                'confidence':  best_conf,
++                'XXconfidenceXX':  best_conf,
+                 'source':      f"Sentence {best_si + 1}",
+                 'source_text': sentences[best_si],
+                 'mentioned':   True,
+</pre><h3>Mutant 107</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -107,7 +107,7 @@
+             report_verdicts[cond] = {
+                 'verdict':     best_pred,
+                 'confidence':  best_conf,
+-                'source':      f"Sentence {best_si + 1}",
++                'XXsourceXX':      f"Sentence {best_si + 1}",
+                 'source_text': sentences[best_si],
+                 'mentioned':   True,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+</pre><h3>Mutant 108</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -107,7 +107,7 @@
+             report_verdicts[cond] = {
+                 'verdict':     best_pred,
+                 'confidence':  best_conf,
+-                'source':      f"Sentence {best_si + 1}",
++                'source':      f"Sentence {best_si - 1}",
+                 'source_text': sentences[best_si],
+                 'mentioned':   True,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+</pre><h3>Mutant 109</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -107,7 +107,7 @@
+             report_verdicts[cond] = {
+                 'verdict':     best_pred,
+                 'confidence':  best_conf,
+-                'source':      f"Sentence {best_si + 1}",
++                'source':      f"Sentence {best_si + 2}",
+                 'source_text': sentences[best_si],
+                 'mentioned':   True,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+</pre><h3>Mutant 110</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -107,7 +107,7 @@
+             report_verdicts[cond] = {
+                 'verdict':     best_pred,
+                 'confidence':  best_conf,
+-                'source':      f"Sentence {best_si + 1}",
++                'source':      f"XXSentence {best_si + 1}XX",
+                 'source_text': sentences[best_si],
+                 'mentioned':   True,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+</pre><h3>Mutant 111</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -108,7 +108,7 @@
+                 'verdict':     best_pred,
+                 'confidence':  best_conf,
+                 'source':      f"Sentence {best_si + 1}",
+-                'source_text': sentences[best_si],
++                'XXsource_textXX': sentences[best_si],
+                 'mentioned':   True,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+                 't2_conf':     all_t2_preds[best_si][cond]['confidence'],
+</pre><h3>Mutant 112</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -109,7 +109,7 @@
+                 'confidence':  best_conf,
+                 'source':      f"Sentence {best_si + 1}",
+                 'source_text': sentences[best_si],
+-                'mentioned':   True,
++                'XXmentionedXX':   True,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+                 't2_conf':     all_t2_preds[best_si][cond]['confidence'],
+                 'probs':       all_sentence_preds[best_si][cond]['probs'],
+</pre><h3>Mutant 113</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -109,7 +109,7 @@
+                 'confidence':  best_conf,
+                 'source':      f"Sentence {best_si + 1}",
+                 'source_text': sentences[best_si],
+-                'mentioned':   True,
++                'mentioned':   False,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+                 't2_conf':     all_t2_preds[best_si][cond]['confidence'],
+                 'probs':       all_sentence_preds[best_si][cond]['probs'],
+</pre><h3>Mutant 114</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -110,7 +110,7 @@
+                 'source':      f"Sentence {best_si + 1}",
+                 'source_text': sentences[best_si],
+                 'mentioned':   True,
+-                't2_present':  all_t2_preds[best_si][cond]['present'],
++                'XXt2_presentXX':  all_t2_preds[best_si][cond]['present'],
+                 't2_conf':     all_t2_preds[best_si][cond]['confidence'],
+                 'probs':       all_sentence_preds[best_si][cond]['probs'],
+                 'meaning':     ERROR_MEANING.get(best_pred, ''),
+</pre><h3>Mutant 115</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -110,7 +110,7 @@
+                 'source':      f"Sentence {best_si + 1}",
+                 'source_text': sentences[best_si],
+                 'mentioned':   True,
+-                't2_present':  all_t2_preds[best_si][cond]['present'],
++                't2_present':  all_t2_preds[best_si][cond]['XXpresentXX'],
+                 't2_conf':     all_t2_preds[best_si][cond]['confidence'],
+                 'probs':       all_sentence_preds[best_si][cond]['probs'],
+                 'meaning':     ERROR_MEANING.get(best_pred, ''),
+</pre><h3>Mutant 116</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -111,7 +111,7 @@
+                 'source_text': sentences[best_si],
+                 'mentioned':   True,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+-                't2_conf':     all_t2_preds[best_si][cond]['confidence'],
++                'XXt2_confXX':     all_t2_preds[best_si][cond]['confidence'],
+                 'probs':       all_sentence_preds[best_si][cond]['probs'],
+                 'meaning':     ERROR_MEANING.get(best_pred, ''),
+             }
+</pre><h3>Mutant 117</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -111,7 +111,7 @@
+                 'source_text': sentences[best_si],
+                 'mentioned':   True,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+-                't2_conf':     all_t2_preds[best_si][cond]['confidence'],
++                't2_conf':     all_t2_preds[best_si][cond]['XXconfidenceXX'],
+                 'probs':       all_sentence_preds[best_si][cond]['probs'],
+                 'meaning':     ERROR_MEANING.get(best_pred, ''),
+             }
+</pre><h3>Mutant 118</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -112,7 +112,7 @@
+                 'mentioned':   True,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+                 't2_conf':     all_t2_preds[best_si][cond]['confidence'],
+-                'probs':       all_sentence_preds[best_si][cond]['probs'],
++                'XXprobsXX':       all_sentence_preds[best_si][cond]['probs'],
+                 'meaning':     ERROR_MEANING.get(best_pred, ''),
+             }
+         else:
+</pre><h3>Mutant 119</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -112,7 +112,7 @@
+                 'mentioned':   True,
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+                 't2_conf':     all_t2_preds[best_si][cond]['confidence'],
+-                'probs':       all_sentence_preds[best_si][cond]['probs'],
++                'probs':       all_sentence_preds[best_si][cond]['XXprobsXX'],
+                 'meaning':     ERROR_MEANING.get(best_pred, ''),
+             }
+         else:
+</pre><h3>Mutant 120</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -113,7 +113,7 @@
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+                 't2_conf':     all_t2_preds[best_si][cond]['confidence'],
+                 'probs':       all_sentence_preds[best_si][cond]['probs'],
+-                'meaning':     ERROR_MEANING.get(best_pred, ''),
++                'XXmeaningXX':     ERROR_MEANING.get(best_pred, ''),
+             }
+         else:
+             t2_present = all_t2_preds[0][cond]['present']
+</pre><h3>Mutant 121</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -113,7 +113,7 @@
+                 't2_present':  all_t2_preds[best_si][cond]['present'],
+                 't2_conf':     all_t2_preds[best_si][cond]['confidence'],
+                 'probs':       all_sentence_preds[best_si][cond]['probs'],
+-                'meaning':     ERROR_MEANING.get(best_pred, ''),
++                'meaning':     ERROR_MEANING.get(best_pred, 'XXXX'),
+             }
+         else:
+             t2_present = all_t2_preds[0][cond]['present']
+</pre><h3>Mutant 122</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -104,17 +104,7 @@
+                          and conf > best_conf)):
+                     best_pred, best_conf, best_si = pred, conf, si
+ 
+-            report_verdicts[cond] = {
+-                'verdict':     best_pred,
+-                'confidence':  best_conf,
+-                'source':      f"Sentence {best_si + 1}",
+-                'source_text': sentences[best_si],
+-                'mentioned':   True,
+-                't2_present':  all_t2_preds[best_si][cond]['present'],
+-                't2_conf':     all_t2_preds[best_si][cond]['confidence'],
+-                'probs':       all_sentence_preds[best_si][cond]['probs'],
+-                'meaning':     ERROR_MEANING.get(best_pred, ''),
+-            }
++            report_verdicts[cond] = None
+         else:
+             t2_present = all_t2_preds[0][cond]['present']
+             t2_conf    = all_t2_preds[0][cond]['confidence']
+</pre><h3>Mutant 135</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -122,7 +122,7 @@
+                           else 'NOT_MENTIONED')
+             report_verdicts[cond] = {
+                 'verdict':     verdict,
+-                'confidence':  t2_conf,
++                'XXconfidenceXX':  t2_conf,
+                 'source':      'Not mentioned in report',
+                 'source_text': '',
+                 'mentioned':   False,
+</pre><h3>Mutant 136</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -123,7 +123,7 @@
+             report_verdicts[cond] = {
+                 'verdict':     verdict,
+                 'confidence':  t2_conf,
+-                'source':      'Not mentioned in report',
++                'XXsourceXX':      'Not mentioned in report',
+                 'source_text': '',
+                 'mentioned':   False,
+                 't2_present':  t2_present,
+</pre><h3>Mutant 137</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -123,7 +123,7 @@
+             report_verdicts[cond] = {
+                 'verdict':     verdict,
+                 'confidence':  t2_conf,
+-                'source':      'Not mentioned in report',
++                'source':      'XXNot mentioned in reportXX',
+                 'source_text': '',
+                 'mentioned':   False,
+                 't2_present':  t2_present,
+</pre><h3>Mutant 138</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -124,7 +124,7 @@
+                 'verdict':     verdict,
+                 'confidence':  t2_conf,
+                 'source':      'Not mentioned in report',
+-                'source_text': '',
++                'XXsource_textXX': '',
+                 'mentioned':   False,
+                 't2_present':  t2_present,
+                 't2_conf':     t2_conf,
+</pre><h3>Mutant 139</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -124,7 +124,7 @@
+                 'verdict':     verdict,
+                 'confidence':  t2_conf,
+                 'source':      'Not mentioned in report',
+-                'source_text': '',
++                'source_text': 'XXXX',
+                 'mentioned':   False,
+                 't2_present':  t2_present,
+                 't2_conf':     t2_conf,
+</pre><h3>Mutant 140</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -125,7 +125,7 @@
+                 'confidence':  t2_conf,
+                 'source':      'Not mentioned in report',
+                 'source_text': '',
+-                'mentioned':   False,
++                'XXmentionedXX':   False,
+                 't2_present':  t2_present,
+                 't2_conf':     t2_conf,
+                 'probs':       {k: 0.0 for k in
+</pre><h3>Mutant 141</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -125,7 +125,7 @@
+                 'confidence':  t2_conf,
+                 'source':      'Not mentioned in report',
+                 'source_text': '',
+-                'mentioned':   False,
++                'mentioned':   True,
+                 't2_present':  t2_present,
+                 't2_conf':     t2_conf,
+                 'probs':       {k: 0.0 for k in
+</pre><h3>Mutant 142</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -126,7 +126,7 @@
+                 'source':      'Not mentioned in report',
+                 'source_text': '',
+                 'mentioned':   False,
+-                't2_present':  t2_present,
++                'XXt2_presentXX':  t2_present,
+                 't2_conf':     t2_conf,
+                 'probs':       {k: 0.0 for k in
+                                 ['SUPPORTED','HALLUCINATED',
+</pre><h3>Mutant 143</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -127,7 +127,7 @@
+                 'source_text': '',
+                 'mentioned':   False,
+                 't2_present':  t2_present,
+-                't2_conf':     t2_conf,
++                'XXt2_confXX':     t2_conf,
+                 'probs':       {k: 0.0 for k in
+                                 ['SUPPORTED','HALLUCINATED',
+                                  'MISSING','INACCURATE']},
+</pre><h3>Mutant 144</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -128,7 +128,7 @@
+                 'mentioned':   False,
+                 't2_present':  t2_present,
+                 't2_conf':     t2_conf,
+-                'probs':       {k: 0.0 for k in
++                'XXprobsXX':       {k: 0.0 for k in
+                                 ['SUPPORTED','HALLUCINATED',
+                                  'MISSING','INACCURATE']},
+                 'meaning':     ERROR_MEANING.get(verdict, ''),
+</pre><h3>Mutant 145</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -128,7 +128,7 @@
+                 'mentioned':   False,
+                 't2_present':  t2_present,
+                 't2_conf':     t2_conf,
+-                'probs':       {k: 0.0 for k in
++                'probs':       {k: 1.0 for k in
+                                 ['SUPPORTED','HALLUCINATED',
+                                  'MISSING','INACCURATE']},
+                 'meaning':     ERROR_MEANING.get(verdict, ''),
+</pre><h3>Mutant 146</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -129,7 +129,7 @@
+                 't2_present':  t2_present,
+                 't2_conf':     t2_conf,
+                 'probs':       {k: 0.0 for k in
+-                                ['SUPPORTED','HALLUCINATED',
++                                ['XXSUPPORTEDXX','HALLUCINATED',
+                                  'MISSING','INACCURATE']},
+                 'meaning':     ERROR_MEANING.get(verdict, ''),
+             }
+</pre><h3>Mutant 147</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -129,7 +129,7 @@
+                 't2_present':  t2_present,
+                 't2_conf':     t2_conf,
+                 'probs':       {k: 0.0 for k in
+-                                ['SUPPORTED','HALLUCINATED',
++                                ['SUPPORTED','XXHALLUCINATEDXX',
+                                  'MISSING','INACCURATE']},
+                 'meaning':     ERROR_MEANING.get(verdict, ''),
+             }
+</pre><h3>Mutant 148</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -130,7 +130,7 @@
+                 't2_conf':     t2_conf,
+                 'probs':       {k: 0.0 for k in
+                                 ['SUPPORTED','HALLUCINATED',
+-                                 'MISSING','INACCURATE']},
++                                 'XXMISSINGXX','INACCURATE']},
+                 'meaning':     ERROR_MEANING.get(verdict, ''),
+             }
+ 
+</pre><h3>Mutant 149</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -130,7 +130,7 @@
+                 't2_conf':     t2_conf,
+                 'probs':       {k: 0.0 for k in
+                                 ['SUPPORTED','HALLUCINATED',
+-                                 'MISSING','INACCURATE']},
++                                 'MISSING','XXINACCURATEXX']},
+                 'meaning':     ERROR_MEANING.get(verdict, ''),
+             }
+ 
+</pre><h3>Mutant 150</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -131,7 +131,7 @@
+                 'probs':       {k: 0.0 for k in
+                                 ['SUPPORTED','HALLUCINATED',
+                                  'MISSING','INACCURATE']},
+-                'meaning':     ERROR_MEANING.get(verdict, ''),
++                'XXmeaningXX':     ERROR_MEANING.get(verdict, ''),
+             }
+ 
+     return report_verdicts
+</pre><h3>Mutant 151</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -131,7 +131,7 @@
+                 'probs':       {k: 0.0 for k in
+                                 ['SUPPORTED','HALLUCINATED',
+                                  'MISSING','INACCURATE']},
+-                'meaning':     ERROR_MEANING.get(verdict, ''),
++                'meaning':     ERROR_MEANING.get(verdict, 'XXXX'),
+             }
+ 
+     return report_verdicts
+</pre><h3>Mutant 167</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -148,7 +148,7 @@
+     if not active:
+         return {
+             'score': 100.0, 'grade': 'Excellent',
+-            'grade_color': '#4CAF50',
++            'XXgrade_colorXX': '#4CAF50',
+             'grade_desc': 'No active conditions',
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+</pre><h3>Mutant 168</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -148,7 +148,7 @@
+     if not active:
+         return {
+             'score': 100.0, 'grade': 'Excellent',
+-            'grade_color': '#4CAF50',
++            'grade_color': 'XX#4CAF50XX',
+             'grade_desc': 'No active conditions',
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+</pre><h3>Mutant 169</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -149,7 +149,7 @@
+         return {
+             'score': 100.0, 'grade': 'Excellent',
+             'grade_color': '#4CAF50',
+-            'grade_desc': 'No active conditions',
++            'XXgrade_descXX': 'No active conditions',
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+             'supported_count': 0, 'hallucinated_count': 0,
+</pre><h3>Mutant 170</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -149,7 +149,7 @@
+         return {
+             'score': 100.0, 'grade': 'Excellent',
+             'grade_color': '#4CAF50',
+-            'grade_desc': 'No active conditions',
++            'grade_desc': 'XXNo active conditionsXX',
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+             'supported_count': 0, 'hallucinated_count': 0,
+</pre><h3>Mutant 174</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -152,7 +152,7 @@
+             'grade_desc': 'No active conditions',
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+-            'supported_count': 0, 'hallucinated_count': 0,
++            'XXsupported_countXX': 0, 'hallucinated_count': 0,
+             'missing_count': 0, 'inaccurate_count': 0,
+         }
+ 
+</pre><h3>Mutant 175</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -152,7 +152,7 @@
+             'grade_desc': 'No active conditions',
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+-            'supported_count': 0, 'hallucinated_count': 0,
++            'supported_count': 1, 'hallucinated_count': 0,
+             'missing_count': 0, 'inaccurate_count': 0,
+         }
+ 
+</pre><h3>Mutant 176</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -152,7 +152,7 @@
+             'grade_desc': 'No active conditions',
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+-            'supported_count': 0, 'hallucinated_count': 0,
++            'supported_count': 0, 'XXhallucinated_countXX': 0,
+             'missing_count': 0, 'inaccurate_count': 0,
+         }
+ 
+</pre><h3>Mutant 177</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -152,7 +152,7 @@
+             'grade_desc': 'No active conditions',
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+-            'supported_count': 0, 'hallucinated_count': 0,
++            'supported_count': 0, 'hallucinated_count': 1,
+             'missing_count': 0, 'inaccurate_count': 0,
+         }
+ 
+</pre><h3>Mutant 178</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -153,7 +153,7 @@
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+             'supported_count': 0, 'hallucinated_count': 0,
+-            'missing_count': 0, 'inaccurate_count': 0,
++            'XXmissing_countXX': 0, 'inaccurate_count': 0,
+         }
+ 
+     raw_score    = 0.0
+</pre><h3>Mutant 179</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -153,7 +153,7 @@
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+             'supported_count': 0, 'hallucinated_count': 0,
+-            'missing_count': 0, 'inaccurate_count': 0,
++            'missing_count': 1, 'inaccurate_count': 0,
+         }
+ 
+     raw_score    = 0.0
+</pre><h3>Mutant 180</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -153,7 +153,7 @@
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+             'supported_count': 0, 'hallucinated_count': 0,
+-            'missing_count': 0, 'inaccurate_count': 0,
++            'missing_count': 0, 'XXinaccurate_countXX': 0,
+         }
+ 
+     raw_score    = 0.0
+</pre><h3>Mutant 181</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -153,7 +153,7 @@
+             'active_count': 0,
+             'not_mentioned_count': not_mentioned_count,
+             'supported_count': 0, 'hallucinated_count': 0,
+-            'missing_count': 0, 'inaccurate_count': 0,
++            'missing_count': 0, 'inaccurate_count': 1,
+         }
+ 
+     raw_score    = 0.0
+</pre><h3>Mutant 196</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -165,7 +165,7 @@
+ 
+     for cond, v in active:
+         verdict   = v['verdict']
+-        weight    = ELRRS_WEIGHTS.get(verdict, 0.0)
++        weight    = ELRRS_WEIGHTS.get(verdict, 1.0)
+         raw_score += weight
+         if verdict in counts:
+             counts[verdict] += 1
+</pre><h3>Mutant 208</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -170,7 +170,7 @@
+         if verdict in counts:
+             counts[verdict] += 1
+ 
+-    score = float(np.clip((raw_score / max_possible) * 100.0, 0, 100))
++    score = float(np.clip((raw_score / max_possible) * 100.0, 0, 101))
+ 
+     grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'
+     for threshold, g, gc, gd in ELRRS_GRADES:
+</pre><h3>Mutant 210</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -172,7 +172,7 @@
+ 
+     score = float(np.clip((raw_score / max_possible) * 100.0, 0, 100))
+ 
+-    grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'
++    grade, grade_color, grade_desc = 'XXCriticalXX', '#9C27B0', 'Severe errors'
+     for threshold, g, gc, gd in ELRRS_GRADES:
+         if score >= threshold:
+             grade, grade_color, grade_desc = g, gc, gd
+</pre><h3>Mutant 211</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -172,7 +172,7 @@
+ 
+     score = float(np.clip((raw_score / max_possible) * 100.0, 0, 100))
+ 
+-    grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'
++    grade, grade_color, grade_desc = 'Critical', 'XX#9C27B0XX', 'Severe errors'
+     for threshold, g, gc, gd in ELRRS_GRADES:
+         if score >= threshold:
+             grade, grade_color, grade_desc = g, gc, gd
+</pre><h3>Mutant 212</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -172,7 +172,7 @@
+ 
+     score = float(np.clip((raw_score / max_possible) * 100.0, 0, 100))
+ 
+-    grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'Severe errors'
++    grade, grade_color, grade_desc = 'Critical', '#9C27B0', 'XXSevere errorsXX'
+     for threshold, g, gc, gd in ELRRS_GRADES:
+         if score >= threshold:
+             grade, grade_color, grade_desc = g, gc, gd
+</pre><h3>Mutant 218</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -179,7 +179,7 @@
+             break
+ 
+     return {
+-        'score':               round(score, 2),
++        'score':               round(score, 3),
+         'grade':               grade,
+         'grade_color':         grade_color,
+         'grade_desc':          grade_desc,
+</pre><h3>Mutant 220</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -181,7 +181,7 @@
+     return {
+         'score':               round(score, 2),
+         'grade':               grade,
+-        'grade_color':         grade_color,
++        'XXgrade_colorXX':         grade_color,
+         'grade_desc':          grade_desc,
+         'active_count':        len(active),
+         'not_mentioned_count': not_mentioned_count,
+</pre><h3>Mutant 221</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -182,7 +182,7 @@
+         'score':               round(score, 2),
+         'grade':               grade,
+         'grade_color':         grade_color,
+-        'grade_desc':          grade_desc,
++        'XXgrade_descXX':          grade_desc,
+         'active_count':        len(active),
+         'not_mentioned_count': not_mentioned_count,
+         'supported_count':     counts['SUPPORTED'],
+</pre><h3>Mutant 223</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -184,7 +184,7 @@
+         'grade_color':         grade_color,
+         'grade_desc':          grade_desc,
+         'active_count':        len(active),
+-        'not_mentioned_count': not_mentioned_count,
++        'XXnot_mentioned_countXX': not_mentioned_count,
+         'supported_count':     counts['SUPPORTED'],
+         'hallucinated_count':  counts['HALLUCINATED'],
+         'missing_count':       counts['MISSING'],
+</pre><h3>Mutant 232</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -205,7 +205,7 @@
+         {elrrs, conditions, not_mentioned}
+     """
+     from .model import device as model_device
+-    if device is None:
++    if device is not None:
+         device = model_device
+ 
+     # Step 1: Split
+</pre><h3>Mutant 233</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -206,7 +206,7 @@
+     """
+     from .model import device as model_device
+     if device is None:
+-        device = model_device
++        device = None
+ 
+     # Step 1: Split
+     sentences = split_report(ai_report)
+</pre><h3>Mutant 234</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -209,7 +209,7 @@
+         device = model_device
+ 
+     # Step 1: Split
+-    sentences = split_report(ai_report)
++    sentences = None
+     if not sentences:
+         sentences = [ai_report]
+     print(f"📝 {len(sentences)} sentence(s)")
+</pre><h3>Mutant 235</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -210,7 +210,7 @@
+ 
+     # Step 1: Split
+     sentences = split_report(ai_report)
+-    if not sentences:
++    if  sentences:
+         sentences = [ai_report]
+     print(f"📝 {len(sentences)} sentence(s)")
+ 
+</pre><h3>Mutant 236</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -211,7 +211,7 @@
+     # Step 1: Split
+     sentences = split_report(ai_report)
+     if not sentences:
+-        sentences = [ai_report]
++        sentences = None
+     print(f"📝 {len(sentences)} sentence(s)")
+ 
+     # Step 2: CheXbert
+</pre><h3>Mutant 237</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -212,7 +212,7 @@
+     sentences = split_report(ai_report)
+     if not sentences:
+         sentences = [ai_report]
+-    print(f"📝 {len(sentences)} sentence(s)")
++    print(f"XX📝 {len(sentences)} sentence(s)XX")
+ 
+     # Step 2: CheXbert
+     all_chexbert = run_chexbert(sentences)
+</pre><h3>Mutant 238</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -215,7 +215,7 @@
+     print(f"📝 {len(sentences)} sentence(s)")
+ 
+     # Step 2: CheXbert
+-    all_chexbert = run_chexbert(sentences)
++    all_chexbert = None
+     print("🔬 CheXbert done")
+ 
+     # Step 3: Model per sentence
+</pre><h3>Mutant 239</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -216,7 +216,7 @@
+ 
+     # Step 2: CheXbert
+     all_chexbert = run_chexbert(sentences)
+-    print("🔬 CheXbert done")
++    print("XX🔬 CheXbert doneXX")
+ 
+     # Step 3: Model per sentence
+     all_sentence_preds, all_t2_preds, all_attn = [], [], []
+</pre><h3>Mutant 240</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -219,7 +219,7 @@
+     print("🔬 CheXbert done")
+ 
+     # Step 3: Model per sentence
+-    all_sentence_preds, all_t2_preds, all_attn = [], [], []
++    all_sentence_preds, all_t2_preds, all_attn = None
+     for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
+         print(f"🤖 S{si+1}: {sent[:50]}...")
+         chex_t = chexbert_to_tensor(chex, device)
+</pre><h3>Mutant 241</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -221,7 +221,7 @@
+     # Step 3: Model per sentence
+     all_sentence_preds, all_t2_preds, all_attn = [], [], []
+     for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
+-        print(f"🤖 S{si+1}: {sent[:50]}...")
++        print(f"🤖 S{si-1}: {sent[:50]}...")
+         chex_t = chexbert_to_tensor(chex, device)
+         preds, t2_preds, attn = run_inference_on_sentence(
+             image, sent, chex_t)
+</pre><h3>Mutant 242</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -221,7 +221,7 @@
+     # Step 3: Model per sentence
+     all_sentence_preds, all_t2_preds, all_attn = [], [], []
+     for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
+-        print(f"🤖 S{si+1}: {sent[:50]}...")
++        print(f"🤖 S{si+2}: {sent[:50]}...")
+         chex_t = chexbert_to_tensor(chex, device)
+         preds, t2_preds, attn = run_inference_on_sentence(
+             image, sent, chex_t)
+</pre><h3>Mutant 243</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -221,7 +221,7 @@
+     # Step 3: Model per sentence
+     all_sentence_preds, all_t2_preds, all_attn = [], [], []
+     for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
+-        print(f"🤖 S{si+1}: {sent[:50]}...")
++        print(f"🤖 S{si+1}: {sent[:51]}...")
+         chex_t = chexbert_to_tensor(chex, device)
+         preds, t2_preds, attn = run_inference_on_sentence(
+             image, sent, chex_t)
+</pre><h3>Mutant 244</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -221,7 +221,7 @@
+     # Step 3: Model per sentence
+     all_sentence_preds, all_t2_preds, all_attn = [], [], []
+     for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
+-        print(f"🤖 S{si+1}: {sent[:50]}...")
++        print(f"XX🤖 S{si+1}: {sent[:50]}...XX")
+         chex_t = chexbert_to_tensor(chex, device)
+         preds, t2_preds, attn = run_inference_on_sentence(
+             image, sent, chex_t)
+</pre><h3>Mutant 245</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -222,7 +222,7 @@
+     all_sentence_preds, all_t2_preds, all_attn = [], [], []
+     for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
+         print(f"🤖 S{si+1}: {sent[:50]}...")
+-        chex_t = chexbert_to_tensor(chex, device)
++        chex_t = None
+         preds, t2_preds, attn = run_inference_on_sentence(
+             image, sent, chex_t)
+         all_sentence_preds.append(preds)
+</pre><h3>Mutant 246</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -223,8 +223,7 @@
+     for si, (sent, chex) in enumerate(zip(sentences, all_chexbert)):
+         print(f"🤖 S{si+1}: {sent[:50]}...")
+         chex_t = chexbert_to_tensor(chex, device)
+-        preds, t2_preds, attn = run_inference_on_sentence(
+-            image, sent, chex_t)
++        preds, t2_preds, attn = None
+         all_sentence_preds.append(preds)
+         all_t2_preds.append(t2_preds)
+         all_attn.append(attn)
+</pre><h3>Mutant 247</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -230,9 +230,7 @@
+         all_attn.append(attn)
+ 
+     # Step 4: Aggregate
+-    report_verdicts = aggregate_verdicts(
+-        sentences, all_sentence_preds,
+-        all_t2_preds, all_chexbert)
++    report_verdicts = None
+     print("📊 Aggregation done")
+ 
+     # Step 5: ELRRs
+</pre><h3>Mutant 248</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -233,7 +233,7 @@
+     report_verdicts = aggregate_verdicts(
+         sentences, all_sentence_preds,
+         all_t2_preds, all_chexbert)
+-    print("📊 Aggregation done")
++    print("XX📊 Aggregation doneXX")
+ 
+     # Step 5: ELRRs
+     elrrs = compute_elrrs(report_verdicts)
+</pre><h3>Mutant 249</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -236,7 +236,7 @@
+     print("📊 Aggregation done")
+ 
+     # Step 5: ELRRs
+-    elrrs = compute_elrrs(report_verdicts)
++    elrrs = None
+     print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}")
+ 
+     # Step 6: Format output
+</pre><h3>Mutant 250</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -237,7 +237,7 @@
+ 
+     # Step 5: ELRRs
+     elrrs = compute_elrrs(report_verdicts)
+-    print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}")
++    print(f"⭐ ELRRs: {elrrs['XXscoreXX']} — {elrrs['grade']}")
+ 
+     # Step 6: Format output
+     active_conditions = []
+</pre><h3>Mutant 251</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -237,7 +237,7 @@
+ 
+     # Step 5: ELRRs
+     elrrs = compute_elrrs(report_verdicts)
+-    print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}")
++    print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['XXgradeXX']}")
+ 
+     # Step 6: Format output
+     active_conditions = []
+</pre><h3>Mutant 252</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -237,7 +237,7 @@
+ 
+     # Step 5: ELRRs
+     elrrs = compute_elrrs(report_verdicts)
+-    print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}")
++    print(f"XX⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}XX")
+ 
+     # Step 6: Format output
+     active_conditions = []
+</pre><h3>Mutant 253</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -240,7 +240,7 @@
+     print(f"⭐ ELRRs: {elrrs['score']} — {elrrs['grade']}")
+ 
+     # Step 6: Format output
+-    active_conditions = []
++    active_conditions = None
+     not_mentioned     = []
+ 
+     for cond in CONDITIONS:
+</pre><h3>Mutant 254</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -241,7 +241,7 @@
+ 
+     # Step 6: Format output
+     active_conditions = []
+-    not_mentioned     = []
++    not_mentioned     = None
+ 
+     for cond in CONDITIONS:
+         v = report_verdicts[cond]
+</pre><h3>Mutant 255</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -244,7 +244,7 @@
+     not_mentioned     = []
+ 
+     for cond in CONDITIONS:
+-        v = report_verdicts[cond]
++        v = None
+         if v['verdict'] != 'NOT_MENTIONED':
+             active_conditions.append({
+                 'name':        cond,
+</pre><h3>Mutant 256</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -245,7 +245,7 @@
+ 
+     for cond in CONDITIONS:
+         v = report_verdicts[cond]
+-        if v['verdict'] != 'NOT_MENTIONED':
++        if v['XXverdictXX'] != 'NOT_MENTIONED':
+             active_conditions.append({
+                 'name':        cond,
+                 'verdict':     v['verdict'],
+</pre><h3>Mutant 257</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -245,7 +245,7 @@
+ 
+     for cond in CONDITIONS:
+         v = report_verdicts[cond]
+-        if v['verdict'] != 'NOT_MENTIONED':
++        if v['verdict'] == 'NOT_MENTIONED':
+             active_conditions.append({
+                 'name':        cond,
+                 'verdict':     v['verdict'],
+</pre><h3>Mutant 258</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -245,7 +245,7 @@
+ 
+     for cond in CONDITIONS:
+         v = report_verdicts[cond]
+-        if v['verdict'] != 'NOT_MENTIONED':
++        if v['verdict'] != 'XXNOT_MENTIONEDXX':
+             active_conditions.append({
+                 'name':        cond,
+                 'verdict':     v['verdict'],
+</pre><h3>Mutant 259</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -247,7 +247,7 @@
+         v = report_verdicts[cond]
+         if v['verdict'] != 'NOT_MENTIONED':
+             active_conditions.append({
+-                'name':        cond,
++                'XXnameXX':        cond,
+                 'verdict':     v['verdict'],
+                 'confidence':  round(v['confidence'], 4),
+                 'meaning':     v['meaning'],
+</pre><h3>Mutant 260</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -248,7 +248,7 @@
+         if v['verdict'] != 'NOT_MENTIONED':
+             active_conditions.append({
+                 'name':        cond,
+-                'verdict':     v['verdict'],
++                'XXverdictXX':     v['verdict'],
+                 'confidence':  round(v['confidence'], 4),
+                 'meaning':     v['meaning'],
+                 'source':      v['source'],
+</pre><h3>Mutant 261</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -248,7 +248,7 @@
+         if v['verdict'] != 'NOT_MENTIONED':
+             active_conditions.append({
+                 'name':        cond,
+-                'verdict':     v['verdict'],
++                'verdict':     v['XXverdictXX'],
+                 'confidence':  round(v['confidence'], 4),
+                 'meaning':     v['meaning'],
+                 'source':      v['source'],
+</pre><h3>Mutant 262</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -249,7 +249,7 @@
+             active_conditions.append({
+                 'name':        cond,
+                 'verdict':     v['verdict'],
+-                'confidence':  round(v['confidence'], 4),
++                'XXconfidenceXX':  round(v['confidence'], 4),
+                 'meaning':     v['meaning'],
+                 'source':      v['source'],
+                 'source_text': v['source_text'],
+</pre><h3>Mutant 263</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -249,7 +249,7 @@
+             active_conditions.append({
+                 'name':        cond,
+                 'verdict':     v['verdict'],
+-                'confidence':  round(v['confidence'], 4),
++                'confidence':  round(v['XXconfidenceXX'], 4),
+                 'meaning':     v['meaning'],
+                 'source':      v['source'],
+                 'source_text': v['source_text'],
+</pre><h3>Mutant 264</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -249,7 +249,7 @@
+             active_conditions.append({
+                 'name':        cond,
+                 'verdict':     v['verdict'],
+-                'confidence':  round(v['confidence'], 4),
++                'confidence':  round(v['confidence'], 5),
+                 'meaning':     v['meaning'],
+                 'source':      v['source'],
+                 'source_text': v['source_text'],
+</pre><h3>Mutant 265</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -250,7 +250,7 @@
+                 'name':        cond,
+                 'verdict':     v['verdict'],
+                 'confidence':  round(v['confidence'], 4),
+-                'meaning':     v['meaning'],
++                'XXmeaningXX':     v['meaning'],
+                 'source':      v['source'],
+                 'source_text': v['source_text'],
+                 'mentioned':   v['mentioned'],
+</pre><h3>Mutant 266</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -250,7 +250,7 @@
+                 'name':        cond,
+                 'verdict':     v['verdict'],
+                 'confidence':  round(v['confidence'], 4),
+-                'meaning':     v['meaning'],
++                'meaning':     v['XXmeaningXX'],
+                 'source':      v['source'],
+                 'source_text': v['source_text'],
+                 'mentioned':   v['mentioned'],
+</pre><h3>Mutant 267</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -251,7 +251,7 @@
+                 'verdict':     v['verdict'],
+                 'confidence':  round(v['confidence'], 4),
+                 'meaning':     v['meaning'],
+-                'source':      v['source'],
++                'XXsourceXX':      v['source'],
+                 'source_text': v['source_text'],
+                 'mentioned':   v['mentioned'],
+                 'xray_present': v['t2_present'],
+</pre><h3>Mutant 268</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -251,7 +251,7 @@
+                 'verdict':     v['verdict'],
+                 'confidence':  round(v['confidence'], 4),
+                 'meaning':     v['meaning'],
+-                'source':      v['source'],
++                'source':      v['XXsourceXX'],
+                 'source_text': v['source_text'],
+                 'mentioned':   v['mentioned'],
+                 'xray_present': v['t2_present'],
+</pre><h3>Mutant 269</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -252,7 +252,7 @@
+                 'confidence':  round(v['confidence'], 4),
+                 'meaning':     v['meaning'],
+                 'source':      v['source'],
+-                'source_text': v['source_text'],
++                'XXsource_textXX': v['source_text'],
+                 'mentioned':   v['mentioned'],
+                 'xray_present': v['t2_present'],
+             })
+</pre><h3>Mutant 270</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -252,7 +252,7 @@
+                 'confidence':  round(v['confidence'], 4),
+                 'meaning':     v['meaning'],
+                 'source':      v['source'],
+-                'source_text': v['source_text'],
++                'source_text': v['XXsource_textXX'],
+                 'mentioned':   v['mentioned'],
+                 'xray_present': v['t2_present'],
+             })
+</pre><h3>Mutant 271</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -253,7 +253,7 @@
+                 'meaning':     v['meaning'],
+                 'source':      v['source'],
+                 'source_text': v['source_text'],
+-                'mentioned':   v['mentioned'],
++                'XXmentionedXX':   v['mentioned'],
+                 'xray_present': v['t2_present'],
+             })
+         else:
+</pre><h3>Mutant 272</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -253,7 +253,7 @@
+                 'meaning':     v['meaning'],
+                 'source':      v['source'],
+                 'source_text': v['source_text'],
+-                'mentioned':   v['mentioned'],
++                'mentioned':   v['XXmentionedXX'],
+                 'xray_present': v['t2_present'],
+             })
+         else:
+</pre><h3>Mutant 273</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -254,7 +254,7 @@
+                 'source':      v['source'],
+                 'source_text': v['source_text'],
+                 'mentioned':   v['mentioned'],
+-                'xray_present': v['t2_present'],
++                'XXxray_presentXX': v['t2_present'],
+             })
+         else:
+             not_mentioned.append(cond)
+</pre><h3>Mutant 274</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -254,7 +254,7 @@
+                 'source':      v['source'],
+                 'source_text': v['source_text'],
+                 'mentioned':   v['mentioned'],
+-                'xray_present': v['t2_present'],
++                'xray_present': v['XXt2_presentXX'],
+             })
+         else:
+             not_mentioned.append(cond)
+</pre><h3>Mutant 275</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -260,7 +260,7 @@
+             not_mentioned.append(cond)
+ 
+     return {
+-        'elrrs':            elrrs,
++        'XXelrrsXX':            elrrs,
+         'conditions':       active_conditions,
+         'not_mentioned':    not_mentioned,
+         'all_attn':         all_attn,
+</pre><h3>Mutant 276</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -261,7 +261,7 @@
+ 
+     return {
+         'elrrs':            elrrs,
+-        'conditions':       active_conditions,
++        'XXconditionsXX':       active_conditions,
+         'not_mentioned':    not_mentioned,
+         'all_attn':         all_attn,
+         'sentences':        sentences,
+</pre><h3>Mutant 277</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -262,7 +262,7 @@
+     return {
+         'elrrs':            elrrs,
+         'conditions':       active_conditions,
+-        'not_mentioned':    not_mentioned,
++        'XXnot_mentionedXX':    not_mentioned,
+         'all_attn':         all_attn,
+         'sentences':        sentences,
+         'all_chexbert':     all_chexbert,
+</pre><h3>Mutant 278</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -263,7 +263,7 @@
+         'elrrs':            elrrs,
+         'conditions':       active_conditions,
+         'not_mentioned':    not_mentioned,
+-        'all_attn':         all_attn,
++        'XXall_attnXX':         all_attn,
+         'sentences':        sentences,
+         'all_chexbert':     all_chexbert,
+     }
+</pre><h3>Mutant 279</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -264,7 +264,7 @@
+         'conditions':       active_conditions,
+         'not_mentioned':    not_mentioned,
+         'all_attn':         all_attn,
+-        'sentences':        sentences,
++        'XXsentencesXX':        sentences,
+         'all_chexbert':     all_chexbert,
+     }
+ 
+</pre><h3>Mutant 280</h3><pre>--- inference/pipeline.py
++++ inference/pipeline.py
+@@ -265,6 +265,6 @@
+         'not_mentioned':    not_mentioned,
+         'all_attn':         all_attn,
+         'sentences':        sentences,
+-        'all_chexbert':     all_chexbert,
++        'XXall_chexbertXX':     all_chexbert,
+     }
+ 
+</pre></body></html>
