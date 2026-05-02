@@ -60,19 +60,19 @@ mutation-testing-assignment
 ## Project Structure
 
 radguard-mutation-testing/
-├── inference/
-│   ├── __init__.py
-│   └── pipeline.py          # Target module (ELRR logic)
-├── tests/
-│   └── test_pipeline.py     # 21 test cases
-├── reports/
-│   ├── baseline_coverage/   # Task 1 coverage report
-│   ├── mutation_baseline/   # Task 2 mutation report (before)
-│   └── mutation_final/      # Task 4 mutation report (after)
-├── conftest.py
-├── setup.cfg
-├── requirements-test.txt
-└── README.md
+- ├── inference/
+- │   ├── __init__.py
+- │   └── pipeline.py          # Target module (ELRR logic)
+- ├── tests/
+- │   └── test_pipeline.py     # 21 test cases
+- ├── reports/
+- │   ├── baseline_coverage/   # Task 1 coverage report
+- │   ├── mutation_baseline/   # Task 2 mutation report (before)
+- │   └── mutation_final/      # Task 4 mutation report (after)
+- ├── conftest.py
+- ├── setup.cfg
+- ├── requirements-test.txt
+- └── README.md
 
 ## Results Summary
 
