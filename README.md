@@ -25,12 +25,12 @@ Install required dependencies:
 
 ```bash
 pip install -r requirements-test.txt
-
+```
 Download required NLTK datasets:
 
 ```bash
 python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
-
+```
 ## Running Baseline Coverage (Task 1)
 
 Run pytest with coverage reporting:
@@ -39,11 +39,11 @@ pytest tests/ -v \
   --cov=inference.pipeline \
   --cov-report=term-missing \
   --cov-report=html:reports/baseline_coverage
-
+```
 Generated report will be available in:
 ```bash
 reports/baseline_coverage/index.html
-
+```
 ## Running Mutation Testing (Task 2)
 
 Run mutation testing using mutmut:
@@ -51,7 +51,7 @@ Run mutation testing using mutmut:
 mutmut run
 mutmut results
 mutmut html
-
+```
 Final report will reflect improved mutation score.
 
 ## Git Branch
