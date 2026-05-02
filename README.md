@@ -82,12 +82,12 @@ radguard-mutation-testing/
 - Tests: 21 total (18 baseline + 3 new)
 
 ## Tools Used
-pytest (testing framework)
-pytest-cov (coverage analysis)
-mutmut (mutation testing)
-NLTK (text processing utilities)
+- pytest (testing framework)
+- pytest-cov (coverage analysis)
+- mutmut (mutation testing)
+- NLTK (text processing utilities)
 
 ## Notes
-Focus was on improving test effectiveness, not just coverage
-Additional test cases were added to kill more mutants
-Mutation score improvement demonstrates stronger test suite quality
+- Focus was on improving test effectiveness, not just coverage
+- Additional test cases were added to kill more mutants
+- Mutation score improvement demonstrates stronger test suite quality
